@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".Activity.MainActivity">
+   <android.support.v7.widget.CardView
+       xmlns:app="http://schemas.android.com/apk/res-auto"
+       android:id="@+id/parent_layout"
+       android:layout_width="match_parent"
+       android:layout_height="125dp"
+       android:layout_margin="5dp"
+       app:cardCornerRadius="30dp">
+      <ImageView
+          android:id="@+id/content"
+          android:layout_width="match_parent"
+          android:layout_height="125dp"
+          android:background="@drawable/musicimage"
+          android:scaleType="fitXY"/>
+   </android.support.v7.widget.CardView>
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="25dp"
+       android:text="------------ MUSIC LIBRARY -----------"
+       android:textSize="22dp"
+       android:textColor="#000000"
+       android:textStyle="bold"
+       android:gravity="center" />
+   <android.support.v4.view.ViewPager
+       android:id="@+id/ViewPaper"
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       android:layout_weight="1">
+   </android.support.v4.view.ViewPager>
+   <android.support.design.widget.TabLayout
+          android:id="@+id/TabLayout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@android:color/transparent"
+          app:tabIndicatorHeight="2dp"
+          app:tabMode="fixed"
+          app:tabSelectedTextColor="#a845de"
+          app:tabTextColor="#707070"
+          app:tabTextAppearance="@style/SizeTabLayout"
+       >
+   </android.support.design.widget.TabLayout>
+</LinearLayout>

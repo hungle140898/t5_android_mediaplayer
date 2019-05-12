@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.appmusic" >
+    package="com.example.appmusic">
 
     <application
         android:allowBackup="true"
@@ -8,8 +8,16 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
-        <activity android:name=".Activity.MainActivity" >
+        android:theme="@style/AppTheme">
+        <activity android:name=".Fragment.Fragment_TrangChu"></activity>
+        <activity android:name=".Fragment.Freagment_BaiHat" />
+        <activity android:name=".Fragment.Fragment_TimKiem" />
+        <activity android:name=".Fragment.Fragment_PlayList" />
+        <activity android:name=".Fragment.Fragment_CaSi" />
+        <activity android:name=".Fragment.Fragment_Album" />
+        <activity android:name=".Fragment.Fragment_TheLoai" />
+        <activity android:name=".Fragment.Fragment_Activity" />
+        <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

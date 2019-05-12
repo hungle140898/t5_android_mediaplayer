@@ -4,7 +4,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.TableLayout;
 import com.example.appmusic.Adapter.MainView;
 import com.example.appmusic.Fragment.Fragment_Album;
 import com.example.appmusic.Fragment.Fragment_CaSi;
@@ -14,13 +13,17 @@ import com.example.appmusic.Fragment.Fragment_TimKiem;
 import com.example.appmusic.Fragment.Fragment_TrangChu;
 import com.example.appmusic.R;
 
+
+
 public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
     ViewPager viewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //
         showFragment();
         init();
     }

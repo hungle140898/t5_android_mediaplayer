@@ -4,17 +4,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.appmusic.Objects.TheLoai;
 import com.example.appmusic.R;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class TheLoaiAdapter extends BaseAdapter {
     private Context context;
     private  int layout;
-    private List<TheLoai> theloaiList ;
+    private List<TheLoai> theloaiList  ;
+    private ArrayList<TheLoai> theLoaiArrayList;
     public TheLoaiAdapter(Context context,int layout,List<TheLoai> theloaiList)
     {
         this.context = context;
@@ -37,26 +41,31 @@ public class TheLoaiAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return 0;
     }
-
     public class ViewHolder{
-        TextView txtTen,txtHinh;
+        ImageView imgview;
     }
-    @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if(view == null) {
-            viewHolder = new ViewHolder();
-            LayoutInflater inflater = (LayoutInflater)context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(layout,null);
-            viewHolder.txtTen = (TextView) view.findViewById(R.id.txtTenTheLoai);
-            viewHolder.txtHinh = (TextView) view.findViewById(R.id.txtHinh);
-        }
-        else {
-            viewHolder = (ViewHolder)view.getTag();
-        }
-        TheLoai theloai =theloaiList.get(position);
-        viewHolder.txtTen.setText(theloai.getTenTheLoai());
-        viewHolder.txtHinh.setText(theloai.getHinhTheLoai());
-        return view;
+
+      @Override
+    public View getView(int position, View converView, ViewGroup parent) {
+            ViewHolder viewHolder;
+            if(converView == null) {
+                viewHolder = new ViewHolder();
+                converView = LayoutInflater.from(context).inflate(R.layout.custom_theloai,parent,false);
+                viewHolder.imgview = converView.findViewById(R.id.txtTenHinh);
+                converView.setTag(viewHolder);
+            }
+            else
+            {
+                viewHolder = (ViewHolder)converView.getTag();
+            }
+            TheLoai theloai = theloaiList.get(position);
+            int ImageID = getMipmapResIdByName(theloai.getHinhTheLoai());
+            viewHolder.imgview.setImageResource(ImageID);
+            return converView;
+    }
+    public int getMipmapResIdByName(String resName) {
+        String pkgName = context.getPackageName();
+        int resID = context.getResources().getIdentifier(resName , "mipmap", pkgName);
+        return resID;
     }
 }

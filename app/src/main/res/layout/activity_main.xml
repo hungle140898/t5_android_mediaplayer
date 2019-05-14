@@ -5,29 +5,17 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+
     tools:context=".Activity.MainActivity">
-   <android.support.v7.widget.CardView
-       xmlns:app="http://schemas.android.com/apk/res-auto"
-       android:id="@+id/parent_layout"
+ <!--  <TextView
        android:layout_width="match_parent"
-       android:layout_height="125dp"
-       android:layout_margin="5dp"
-       app:cardCornerRadius="30dp">
-      <ImageView
-          android:id="@+id/content"
-          android:layout_width="match_parent"
-          android:layout_height="125dp"
-          android:background="@drawable/musicimage"
-          android:scaleType="fitXY"/>
-   </android.support.v7.widget.CardView>
-   <TextView
-       android:layout_width="match_parent"
-       android:layout_height="25dp"
-       android:text="------------ MUSIC LIBRARY -----------"
+       android:layout_height="35dp"
+       android:text="   MUSIC LIBRARY"
        android:textSize="22dp"
-       android:textColor="#000000"
+       android:textColor="#FFFFFF"
+       android:background="@drawable/textviewmusic"
        android:textStyle="bold"
-       android:gravity="center" />
+       android:gravity="center" />-->
    <android.support.v4.view.ViewPager
        android:id="@+id/ViewPaper"
        android:layout_width="match_parent"

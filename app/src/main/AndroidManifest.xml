@@ -9,14 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Fragment.Fragment_TrangChu"></activity>
-        <activity android:name=".Fragment.Freagment_BaiHat" />
+        <activity android:name=".Fragment.ToolBar"></activity>
+        <activity android:name=".Fragment.Fragment_TrangChu" />
         <activity android:name=".Fragment.Fragment_TimKiem" />
         <activity android:name=".Fragment.Fragment_PlayList" />
         <activity android:name=".Fragment.Fragment_CaSi" />
         <activity android:name=".Fragment.Fragment_Album" />
         <activity android:name=".Fragment.Fragment_TheLoai" />
-        <activity android:name=".Fragment.Fragment_Activity" />
         <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

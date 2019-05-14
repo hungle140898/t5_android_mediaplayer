@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@drawable/backgroundfrag"
     android:orientation="vertical">
-<ListView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/listView1"
-    android:layout_alignParentTop="true"
-    android:layout_centerHorizontal="true"></ListView>
+    <SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/customsearch"
+        android:textAlignment="textStart"
+        android:id="@+id/search_bar"
+        android:queryHint="Search here"
+        ></SearchView>
+    <requestFocus />
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ListViewBaiHat"
+        android:gravity="center"
+        android:numColumns="auto_fit"
+        ></ListView>
 </LinearLayout>

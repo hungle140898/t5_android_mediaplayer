@@ -25,18 +25,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+        /*ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();*/
         setContentView(R.layout.activity_main);
         //
         database = new Database(this,"appmp3.sqlite",null,1);
-        database.QueryData("CREATE TABLE IF NOT EXISTS Album(IDAlbum INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, TenAlbum VARCHAR NOT NULL,HinhAlbum VARCHAR)");
+        /*database.QueryData("CREATE TABLE IF NOT EXISTS Album(IDAlbum INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, TenAlbum VARCHAR NOT NULL,HinhAlbum VARCHAR)");
         database.QueryData("CREATE TABLE IF NOT EXISTS BaiHat(IDBaiHat INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, IDAlbum INTEGER NOT NULL,IDTheLoai INTEGER NOT NULL,IDCaSi INTEGER NOT NULL,TenBaiHat VARCHAR,LinkBaiHat VARCHAR)");
         database.QueryData("CREATE TABLE IF NOT EXISTS CaSi(IDCaSi INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, TenCaSi VARCHAR NOT NULL,HinhCaSi VARCHAR)");
         database.QueryData("CREATE TABLE IF NOT EXISTS PlayList(IDPlayList INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, TenPlayList VARCHAR NOT NULL)");
         database.QueryData("CREATE TABLE IF NOT EXISTS Playlist_BaiHat(IDPlayList INTEGER NOT NULL, IDBaiHat INTEGER NOT NULL,PRIMARY KEY('IDPlayList','IDBaiHat'))");
-        database.QueryData("CREATE TABLE IF NOT EXISTS TheLoai(IDTheLoai INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, TenTheLoai VARCHAR NOT NULL,HinhTheLoai VARCHAR)");
-
+        database.QueryData("CREATE TABLE IF NOT EXISTS TheLoai(IDTheLoai INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, TenTheLoai VARCHAR NOT NULL,HinhTheLoai VARCHAR)");*/
 
 /*        database.QueryData("INSERT INTO TheLoai VALUES(null,'EDM','edm')");
         database.QueryData("INSERT INTO TheLoai VALUES(null,'INDIE','indie')");

@@ -8,36 +8,49 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.appmusic.Adapter.ListPlayListAdapter;
+import com.example.appmusic.Adapter.ListSongAdapter;
 import com.example.appmusic.Objects.PlayList;
+import com.example.appmusic.Objects.Song;
 import com.example.appmusic.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.appmusic.Activity.MainActivity.database;
 
-public class Fragment_PlayList extends Fragment {
+public class Fragment_PlayList extends Fragment implements SearchView.OnQueryTextListener {
     View view;
-    ListView lv_PlayList;
-    ArrayList<PlayList> playLists = new ArrayList<>();
+    GridView gv_PlayList;
+    ArrayList<PlayList> arrayPlayList;
+    ArrayList<PlayList> arrayTimKiemPlayList;
+    ListPlayListAdapter adapter;
+    SearchView searchView;
     Button bt_addplaylist;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_fragment__album);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_playlist, container, false);
+        gv_PlayList = view.findViewById(R.id.lv_Playlist);
+        LayDanhSachPlayList();
+        SetAdapter(arrayPlayList);
+        adapter.notifyDataSetChanged();
+        searchView = view.findViewById(R.id.search_bar);
+        searchView.setOnQueryTextListener(this);
         bt_addplaylist = (Button) view.findViewById(R.id.bt_addplaylist);
         bt_addplaylist.setOnClickListener(new OnClickListener() {
             @Override
@@ -45,24 +58,50 @@ public class Fragment_PlayList extends Fragment {
                 dialogthem();
             }
         });
-        getdata();
         return view;
     }
-
-    private void getdata() {
-        playLists.clear();
+    private void SetAdapter(List<PlayList> list)
+    {
+        adapter = new ListPlayListAdapter(getActivity(),R.layout.row_playlist,list);
+        gv_PlayList.setAdapter(adapter);
+    }
+    public ArrayList<PlayList>LayDanhSachPlayList () {
+        arrayPlayList = new ArrayList<>();
         Cursor data = database.getData("SELECT PlayList.IDPlayList,PlayList.TenPlayList,count(Playlist_BaiHat.IDPlayList) FROM PlayList LEFT JOIN Playlist_BaiHat ON PlayList.IDPlayList = Playlist_BaiHat.IDPlayList GROUP by PlayList.IDPlayList");
-
         while (data.moveToNext()) {
             PlayList playList = new PlayList();
             playList.setIDPlayList(data.getInt(0));
             playList.setTenPlayList(data.getString(1));
             playList.setSoBaiHat(data.getInt(2));
-            playLists.add(playList);
+            arrayPlayList.add(playList);
         }
-        lv_PlayList = view.findViewById(R.id.lv_Playlist);
-        ListPlayListAdapter listPlayListAdapter = new ListPlayListAdapter(getActivity(), R.layout.row_playlist, playLists);
-        lv_PlayList.setAdapter(listPlayListAdapter);
+        return arrayPlayList;
+    }
+    public ArrayList<PlayList>TimKiemPlayList (String searchText) {
+        arrayTimKiemPlayList = new ArrayList<>();
+        Cursor data = database.getData("SELECT PlayList.IDPlayList,PlayList.TenPlayList,count(Playlist_BaiHat.IDPlayList) FROM PlayList LEFT JOIN Playlist_BaiHat ON PlayList.IDPlayList = Playlist_BaiHat.IDPlayList  WHERE PlayList.TenPlayList LIKE '%"+searchText+"%' GROUP by PlayList.IDPlayList ");
+        while (data.moveToNext()) {
+            PlayList playList = new PlayList();
+            playList.setIDPlayList(data.getInt(0));
+            playList.setTenPlayList(data.getString(1));
+            playList.setSoBaiHat(data.getInt(2));
+            arrayTimKiemPlayList.add(playList);
+        }
+        return arrayTimKiemPlayList;
+    }
+    private void getdata() {
+        arrayPlayList.clear();
+        Cursor data = database.getData("SELECT PlayList.IDPlayList,PlayList.TenPlayList,count(Playlist_BaiHat.IDPlayList) FROM PlayList LEFT JOIN Playlist_BaiHat ON PlayList.IDPlayList = Playlist_BaiHat.IDPlayList GROUP by PlayList.IDPlayList");
+        while (data.moveToNext()) {
+            PlayList playList = new PlayList();
+            playList.setIDPlayList(data.getInt(0));
+            playList.setTenPlayList(data.getString(1));
+            playList.setSoBaiHat(data.getInt(2));
+            arrayPlayList.add(playList);
+        }
+        gv_PlayList = view.findViewById(R.id.lv_Playlist);
+        ListPlayListAdapter listPlayListAdapter = new ListPlayListAdapter(getActivity(), R.layout.row_playlist, arrayPlayList);
+        gv_PlayList.setAdapter(listPlayListAdapter);
     }
 
     private void dialogthem() {
@@ -95,4 +134,15 @@ public class Fragment_PlayList extends Fragment {
     }
 
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String searchText) {
+        TimKiemPlayList(searchText);
+        SetAdapter(arrayTimKiemPlayList);
+        return true;
+    }
 }

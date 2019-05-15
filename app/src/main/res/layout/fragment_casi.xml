@@ -4,12 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/backgroundfrag"
+    android:orientation="vertical"
     >
-
-    <ListView
-        android:id="@+id/lv_casi"
-        android:layout_width="wrap_content"
+    <SearchView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp" />
+        android:layout_margin="10dp"
+        android:background="@drawable/customsearch"
+        android:textAlignment="textStart"
+        android:id="@+id/search_bar"
+        android:queryHint="Search here"
+        ></SearchView>
+    <requestFocus />
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/gv_casi"
+        android:gravity="center"
+        android:numColumns="auto_fit"
+        ></GridView>
 </LinearLayout>

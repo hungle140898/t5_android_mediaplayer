@@ -2,24 +2,29 @@ package com.example.appmusic.Adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.appmusic.Fragment.Fragment_TrangChu;
+import com.example.appmusic.Interface.EventListener;
 import com.example.appmusic.Objects.Song;
 import com.example.appmusic.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ListSongAdapter extends ArrayAdapter<Song> {
+public class ListSongAdapter extends BaseAdapter {
     EventListener listener;
     private Context context;
     private  int resource;
-    private ArrayList<Song> songs;
+    private List<Song> songList;
 
   /*  public ListSongAdapter(Context context, int resource, ArrayList<Song> songs) {
       super(context, resource, songs);
@@ -27,15 +32,30 @@ public class ListSongAdapter extends ArrayAdapter<Song> {
       this.resource = resource;
       this.songs = songs;
      }*/
-    public ListSongAdapter(Context context, int resource, ArrayList<Song> songs, EventListener listener) {
-        super(context, resource, songs);
+    public ListSongAdapter(Context context, int resource, List<Song> songList, EventListener listener) {
         this.context = context;
         this.resource = resource;
-        this.songs = songs;
+        this.songList= songList;
         this.listener = listener;
     }
 
-    @NonNull
+
+    @Override
+    public int getCount() {
+        return songList.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return null;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final ViewHolder viewHolder;
@@ -52,7 +72,7 @@ public class ListSongAdapter extends ArrayAdapter<Song> {
         else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        final Song song = songs.get(position);
+        final Song song = songList.get(position);
         int ImageId = getMipmapResIdByName(song.getHinh());
         viewHolder.iv_Avatar.setImageResource(ImageId);
         viewHolder.tv_tenbaihat.setText(song.getTenBaiHat());
@@ -61,6 +81,18 @@ public class ListSongAdapter extends ArrayAdapter<Song> {
             @Override
             public void onClick(View v) {
                 listener.showalertdialog(song.getIDBaiHat(),song.getTenBaiHat());
+            }
+        });
+        viewHolder.ib_addplaylist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.dialogaddplaylist(song.getIDBaiHat());
+            }
+        });
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.songclick(song.getIDBaiHat());
             }
         });
         return convertView;
@@ -75,7 +107,5 @@ public class ListSongAdapter extends ArrayAdapter<Song> {
         int resID = context.getResources().getIdentifier(resName , "mipmap", pkgName);
         return resID;
     }
-    public interface EventListener {
-        void showalertdialog(int id, String tenbaihat);
-    }
+
 }

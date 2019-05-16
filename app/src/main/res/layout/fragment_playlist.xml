@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#50A625">
+    android:background="@drawable/backgroundfrag"
+    android:orientation="vertical">
+    <SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/customsearch"
+        android:textAlignment="textStart"
+        android:id="@+id/search_bar"
+        android:queryHint="Search here"
+        ></SearchView>
+    <requestFocus />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bt_addplaylist"
+        android:background="@drawable/btnplaylist"
+        android:layout_gravity="center"
+        android:textColor="#333333"
+        android:textSize="18sp"
+        android:layout_margin="10dp"
+        android:drawableLeft="@drawable/add"
+        android:text="  TẠO PLAYLIST     "/>
 
-</android.support.constraint.ConstraintLayout>
+    <GridView
+        android:id="@+id/lv_Playlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:numColumns="auto_fit"></GridView>
+
+</LinearLayout>

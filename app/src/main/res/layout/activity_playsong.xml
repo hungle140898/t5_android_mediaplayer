@@ -6,8 +6,17 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"
     android:screenOrientation="portrait"
-    tools:context=".Activity.PlaySongActivity">
+    tools:context=".MainActivity">
 
+
+    <LinearLayout
+        android:id="@+id/SliderDots"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="2dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -64,71 +73,11 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imgAnhBaiHat"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="54dp"
-        android:layout_marginEnd="55dp"
-        android:layout_marginBottom="297dp"
-        app:srcCompat="@drawable/music_record" />
-
-    <TextView
-        android:id="@+id/txtTenCaSi"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="201dp"
-        android:gravity="center"
-        android:text="Tên ca sĩ"
-        android:textColor="@android:color/background_light"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/txtTenBaiHat"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="239dp"
-        android:gravity="center"
-        android:text="Tên bài hát"
-        android:textColor="@android:color/background_light"
-        android:textSize="30sp" />
-
-    <SeekBar
-        android:id="@+id/sbBaiHat"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="55dp"
-        android:layout_marginBottom="155dp" />
-
-    <TextView
-        android:id="@+id/txtThoiGianHienTai"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="152dp"
-        android:text="00:00"
-        android:textColor="@android:color/background_light"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/txtTongThoiGian"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="2dp"
-        android:layout_marginBottom="152dp"
-        android:text="00:00"
-        android:textColor="@android:color/background_light"
-        android:textSize="18sp" />
+        android:layout_height="504dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="38dp" />
 
 </RelativeLayout>

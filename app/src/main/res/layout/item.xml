@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/songItem"
+        android:layout_width="391dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="0dp"
+        android:text="Tên Bài Hát"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/singerItem"
+        android:layout_width="391dp"
+        android:layout_height="34dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="36dp"
+        android:text="Tên ca sĩ"
+        android:textSize="18sp" />
+</RelativeLayout>

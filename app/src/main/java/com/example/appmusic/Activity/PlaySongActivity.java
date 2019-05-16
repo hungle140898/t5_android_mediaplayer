@@ -18,6 +18,8 @@ package com.example.appmusic.Activity;
 
 import android.media.MediaPlayer;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,56 +27,44 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.widget.LinearLayout;
+
+import com.example.appmusic.Adapter.ViewPagerAdapter;
+import com.example.appmusic.Fragment.SongDetailsFragment;
+import com.example.appmusic.Fragment.SongsListFragment;
+import com.example.appmusic.Model.Song;
+import com.example.appmusic.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import com.example.appmusic.Model.Song;
-import com.example.appmusic.R;
 
 public class PlaySongActivity extends AppCompatActivity {
 
-    TextView txtTotalTime, txtCurrentTime, txtSongName, txtSingerName;
-    ImageView imgSong;
     ImageButton btnReplay, btnPrev, btnNext, btnPlay, btnShuffle;
-    SeekBar sbSong;
     ArrayList<Song> arraySong;
-    int mPosition = 0;
-    MediaPlayer mediaPlayer;
+    public int mPosition = 0;
+    public MediaPlayer mediaPlayer;
     boolean isReplay = false, isReplayOne = false, isShuffle = false;
     Animation animation;
+    LinearLayout sliderDotspanel;
+    private ImageView[] dots;
+    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_playsong);
 
         mapping();
         addSong();
-
-        animation = AnimationUtils.loadAnimation(this, R.anim.disc_rotate);
-
+        setLayout();
         createMediaPlayer();
+        setTotalTime();
 
-        sbSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                mediaPlayer.seekTo(sbSong.getProgress());
-            }
-        });
+        viewPager.setTag(-16110110, arraySong);
+        viewPager.setTag(-16110111, mPosition);
     }
 
     private void addSong() {
@@ -88,31 +78,26 @@ public class PlaySongActivity extends AppCompatActivity {
         arraySong.add(new Song("Older", "Sasha Sloan", R.raw.older));
     }
 
-
     private void mapping() {
-        txtCurrentTime = findViewById(R.id.txtThoiGianHienTai);
-        txtTotalTime = findViewById(R.id.txtTongThoiGian);
-        txtSingerName = findViewById(R.id.txtTenCaSi);
-        txtSongName = findViewById(R.id.txtTenBaiHat);
-        imgSong = findViewById(R.id.imgAnhBaiHat);
+        viewPager = findViewById(R.id.viewPager);
         btnPlay = findViewById(R.id.btnPlay);
         btnNext = findViewById(R.id.btnNext);
         btnPrev = findViewById(R.id.btnPrevious);
         btnReplay = findViewById(R.id.btnLapLai);
         btnShuffle = findViewById(R.id.btnNgauNhien);
-        sbSong = findViewById(R.id.sbBaiHat);
+        sliderDotspanel = findViewById(R.id.SliderDots);
     }
 
-    private void createMediaPlayer() {
+    public void createMediaPlayer() {
         mediaPlayer = MediaPlayer.create(PlaySongActivity.this, arraySong.get(mPosition).getFile());
-        txtSongName.setText(arraySong.get(mPosition).getTitle());
-        txtSingerName.setText(arraySong.get(mPosition).getSinger());
+        viewPager.setTag(-16110400, arraySong.get(mPosition).getTitle());
+        viewPager.setTag(-16110401, arraySong.get(mPosition).getSinger());
     }
 
-    private void setTotalTime() {
+    public void setTotalTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss");
-        txtTotalTime.setText(dateFormat.format(mediaPlayer.getDuration()));
-        sbSong.setMax(mediaPlayer.getDuration());
+        viewPager.setTag(-16110402, dateFormat.format(mediaPlayer.getDuration()));
+        viewPager.setTag(-16110403, mediaPlayer.getDuration());
     }
 
     private void updateCurrentTime() {
@@ -120,9 +105,9 @@ public class PlaySongActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss");
-                txtCurrentTime.setText(dateFormat.format(mediaPlayer.getCurrentPosition()));
-                sbSong.setProgress(mediaPlayer.getCurrentPosition());
+                viewPager.setTag(-16110404, mediaPlayer.getCurrentPosition());
+                viewPager.setTag(-16110111, mPosition);
+                viewPager.getAdapter().notifyDataSetChanged();
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
@@ -156,11 +141,11 @@ public class PlaySongActivity extends AppCompatActivity {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
             btnPlay.setImageResource(R.drawable.play);
-            imgSong.clearAnimation();
+            //imgSong.clearAnimation();
         } else {
             mediaPlayer.start();
             btnPlay.setImageResource(R.drawable.pause);
-            imgSong.startAnimation(animation);
+            //imgSong.startAnimation(animation);
         }
         setTotalTime();
         updateCurrentTime();
@@ -177,6 +162,8 @@ public class PlaySongActivity extends AppCompatActivity {
         createMediaPlayer();
         mediaPlayer.start();
         btnPlay.setImageResource(R.drawable.pause);
+        viewPager.setTag(-16110111, mPosition);
+        viewPager.getAdapter().notifyDataSetChanged();
         setTotalTime();
         updateCurrentTime();
     }
@@ -192,6 +179,8 @@ public class PlaySongActivity extends AppCompatActivity {
         createMediaPlayer();
         mediaPlayer.start();
         btnPlay.setImageResource(R.drawable.pause);
+        viewPager.setTag(-16110111, mPosition);
+        viewPager.getAdapter().notifyDataSetChanged();
         setTotalTime();
         updateCurrentTime();
     }
@@ -221,5 +210,50 @@ public class PlaySongActivity extends AppCompatActivity {
             btnShuffle.setImageResource(R.drawable.no_shuffle);
             addSong();
         }
+    }
+
+    public void setLayout(){
+
+        dots = new ImageView[2];
+        for (int i = 0; i < 2; i++) {
+
+            dots[i] = new ImageView(this);
+            dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            params.setMargins(8, 0, 8, 0);
+
+            sliderDotspanel.addView(dots[i], params);
+        }
+        dots[1].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.addFragment(new SongsListFragment());
+        viewPagerAdapter.addFragment(new SongDetailsFragment());
+        viewPager.setAdapter(viewPagerAdapter);
+        viewPager.setCurrentItem(1);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                for(int i = 0; i< 2; i++){
+                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
+                }
+
+                dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+
+        animation = AnimationUtils.loadAnimation(this, R.anim.disc_rotate);
     }
 }

@@ -22,8 +22,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();*/
         setContentView(R.layout.activity_main);
         //
         database = new Database(this,"appmp3.sqlite",null,1);

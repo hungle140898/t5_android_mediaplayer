@@ -1,5 +1,6 @@
 package com.example.appmusic.Fragment;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -8,7 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.SearchView;
+
+import com.example.appmusic.Activity.PlaySongActivity;
 import com.example.appmusic.Adapter.AlbumAdapter;
+import com.example.appmusic.Interface.EventListener;
 import com.example.appmusic.Objects.Album;
 import com.example.appmusic.R;
 import java.util.ArrayList;
@@ -16,7 +20,8 @@ import java.util.List;
 
 import static com.example.appmusic.Activity.MainActivity.database;
 
-public class Fragment_Album extends Fragment implements SearchView.OnQueryTextListener {
+public class Fragment_Album extends Fragment implements SearchView.OnQueryTextListener, EventListener {
+    EventListener listener;
     View view;
     GridView lvAlbum;
     ArrayList<Album> albumArrayList;
@@ -40,7 +45,7 @@ public class Fragment_Album extends Fragment implements SearchView.OnQueryTextLi
     }
     private void SetAdapter(List<Album> list)
     {
-        adapter = new AlbumAdapter(getActivity(), R.layout.custom_album, list);
+        adapter = new AlbumAdapter(getActivity(), R.layout.custom_album, list, Fragment_Album.this);
         lvAlbum.setAdapter(adapter);
     }
     public List<Album> LayDanhSachAlbum()
@@ -85,5 +90,44 @@ public class Fragment_Album extends Fragment implements SearchView.OnQueryTextLi
         TimDanhSachAlbum(searchText);
         SetAdapter(arrayTimKiemAlbum);
         return true;
+    }
+
+    @Override
+    public void showalertdialog(int id, String tenbaihat) {
+
+    }
+
+    @Override
+    public void dialogaddplaylist(int idbaihat) {
+
+    }
+
+    @Override
+    public void songclick(int id) {
+
+    }
+
+    @Override
+    public void playlistClick(int id) {
+
+    }
+
+    @Override
+    public void theloaiClick(int id) {
+
+    }
+
+    @Override
+    public void albumClick(int id) {
+        Intent intent=new Intent(getContext(), PlaySongActivity.class);
+        int key=4;
+        intent.putExtra("key",key);
+        intent.putExtra("id",id);
+        startActivity(intent);
+    }
+
+    @Override
+    public void casiClick(int id) {
+
     }
 }

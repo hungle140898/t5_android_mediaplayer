@@ -1,6 +1,7 @@
 package com.example.appmusic.Fragment;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,27 +9,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.appmusic.Activity.PlaySongActivity;
 import com.example.appmusic.Adapter.ListPlayListAdapter;
-import com.example.appmusic.Adapter.ListSongAdapter;
 import com.example.appmusic.Objects.PlayList;
-import com.example.appmusic.Objects.Song;
 import com.example.appmusic.R;
+import com.example.appmusic.Interface.EventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.appmusic.Activity.MainActivity.database;
 
-public class Fragment_PlayList extends Fragment implements SearchView.OnQueryTextListener {
+public class Fragment_PlayList extends Fragment implements SearchView.OnQueryTextListener, EventListener {
     View view;
     GridView gv_PlayList;
     ArrayList<PlayList> arrayPlayList;
@@ -60,12 +58,13 @@ public class Fragment_PlayList extends Fragment implements SearchView.OnQueryTex
         });
         return view;
     }
-    private void SetAdapter(List<PlayList> list)
-    {
-        adapter = new ListPlayListAdapter(getActivity(),R.layout.row_playlist,list);
+
+    private void SetAdapter(List<PlayList> list) {
+        adapter = new ListPlayListAdapter(getActivity(), R.layout.row_playlist, list, Fragment_PlayList.this);
         gv_PlayList.setAdapter(adapter);
     }
-    public ArrayList<PlayList>LayDanhSachPlayList () {
+
+    public ArrayList<PlayList> LayDanhSachPlayList() {
         arrayPlayList = new ArrayList<>();
         Cursor data = database.getData("SELECT PlayList.IDPlayList,PlayList.TenPlayList,count(Playlist_BaiHat.IDPlayList) FROM PlayList LEFT JOIN Playlist_BaiHat ON PlayList.IDPlayList = Playlist_BaiHat.IDPlayList GROUP by PlayList.IDPlayList");
         while (data.moveToNext()) {
@@ -77,9 +76,10 @@ public class Fragment_PlayList extends Fragment implements SearchView.OnQueryTex
         }
         return arrayPlayList;
     }
-    public ArrayList<PlayList>TimKiemPlayList (String searchText) {
+
+    public ArrayList<PlayList> TimKiemPlayList(String searchText) {
         arrayTimKiemPlayList = new ArrayList<>();
-        Cursor data = database.getData("SELECT PlayList.IDPlayList,PlayList.TenPlayList,count(Playlist_BaiHat.IDPlayList) FROM PlayList LEFT JOIN Playlist_BaiHat ON PlayList.IDPlayList = Playlist_BaiHat.IDPlayList  WHERE PlayList.TenPlayList LIKE '%"+searchText+"%' GROUP by PlayList.IDPlayList ");
+        Cursor data = database.getData("SELECT PlayList.IDPlayList,PlayList.TenPlayList,count(Playlist_BaiHat.IDPlayList) FROM PlayList LEFT JOIN Playlist_BaiHat ON PlayList.IDPlayList = Playlist_BaiHat.IDPlayList  WHERE PlayList.TenPlayList LIKE '%" + searchText + "%' GROUP by PlayList.IDPlayList ");
         while (data.moveToNext()) {
             PlayList playList = new PlayList();
             playList.setIDPlayList(data.getInt(0));
@@ -89,6 +89,7 @@ public class Fragment_PlayList extends Fragment implements SearchView.OnQueryTex
         }
         return arrayTimKiemPlayList;
     }
+
     private void getdata() {
         arrayPlayList.clear();
         Cursor data = database.getData("SELECT PlayList.IDPlayList,PlayList.TenPlayList,count(Playlist_BaiHat.IDPlayList) FROM PlayList LEFT JOIN Playlist_BaiHat ON PlayList.IDPlayList = Playlist_BaiHat.IDPlayList GROUP by PlayList.IDPlayList");
@@ -100,7 +101,7 @@ public class Fragment_PlayList extends Fragment implements SearchView.OnQueryTex
             arrayPlayList.add(playList);
         }
         gv_PlayList = view.findViewById(R.id.lv_Playlist);
-        ListPlayListAdapter listPlayListAdapter = new ListPlayListAdapter(getActivity(), R.layout.row_playlist, arrayPlayList);
+        ListPlayListAdapter listPlayListAdapter = new ListPlayListAdapter(getActivity(), R.layout.row_playlist, arrayPlayList, Fragment_PlayList.this);
         gv_PlayList.setAdapter(listPlayListAdapter);
     }
 
@@ -144,5 +145,45 @@ public class Fragment_PlayList extends Fragment implements SearchView.OnQueryTex
         TimKiemPlayList(searchText);
         SetAdapter(arrayTimKiemPlayList);
         return true;
+    }
+
+    @Override
+    public void showalertdialog(int id, String tenbaihat) {
+
+    }
+
+    @Override
+    public void dialogaddplaylist(int idbaihat) {
+
+    }
+
+    @Override
+    public void songclick(int id) {
+
+    }
+
+    @Override
+    public void playlistClick(int id) {
+        Intent intent = new Intent(getContext(), PlaySongActivity.class);
+        int key = 2;
+        intent.putExtra("key", key);
+        intent.putExtra("id", id);
+        startActivity(intent);
+        //Toast.makeText(getActivity(),String.valueOf(id),Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void theloaiClick(int id) {
+
+    }
+
+    @Override
+    public void albumClick(int id) {
+
+    }
+
+    @Override
+    public void casiClick(int id) {
+
     }
 }

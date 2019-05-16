@@ -5,12 +5,14 @@ public class Song {
     private String TenBaiHat;
     private String TenCaSi;
     private String Hinh;
+    private String Link;
 
-    public Song(int idBaiHat, String tenBaiHat, String tenCaSi, String hinh) {
+    public Song(int idBaiHat, String tenBaiHat, String tenCaSi, String hinh, String link) {
         IDBaiHat = idBaiHat;
         TenBaiHat = tenBaiHat;
         TenCaSi = tenCaSi;
         Hinh = hinh;
+        Link = link;
     }
     public Song()
     {
@@ -46,5 +48,13 @@ public class Song {
 
     public void setHinh(String hinh) {
         Hinh = hinh;
+    }
+
+    public String getLink() {
+        return Link;
+    }
+
+    public void setLink(String link) {
+        Link = link;
     }
 }

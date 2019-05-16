@@ -1,26 +1,29 @@
 package com.example.appmusic.Adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.appmusic.Interface.EventListener;
 import com.example.appmusic.Objects.Singer;
 import com.example.appmusic.R;
 import java.util.List;
 
 public class ListSingerAdapter extends BaseAdapter {
+    EventListener listener;
     private Context context;
     private  int layout;
     private List<Singer> singerList;
 
-    public ListSingerAdapter(Context context, int layout, List<Singer> singerList) {
+    public ListSingerAdapter(Context context, int layout, List<Singer> singerList, EventListener listener) {
         this.context=context;
         this.layout = layout;
         this.singerList = singerList;
+        this.listener = listener;
     }
 
     @Override
@@ -57,11 +60,17 @@ public class ListSingerAdapter extends BaseAdapter {
         else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        Singer singer = singerList.get(position);
+        final Singer singer = singerList.get(position);
         int ImageId = getMipmapResIdByName(singer.getHinhCaSi());
         viewHolder.iv_avatarcasi.setImageResource(ImageId);
         viewHolder.tv_tencasi.setText(singer.getTenCaSi());
         viewHolder.tv_sobaihat.setText( Integer.toString(singer.getSoBaiHat())+" Bài Hát");
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.casiClick(singer.getIDCaSi());
+            }
+        });
         return convertView;
     }
 

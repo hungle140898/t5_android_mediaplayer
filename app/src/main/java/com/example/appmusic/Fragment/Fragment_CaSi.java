@@ -1,5 +1,6 @@
 package com.example.appmusic.Fragment;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,7 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.SearchView;
+
+import com.example.appmusic.Activity.PlaySongActivity;
 import com.example.appmusic.Adapter.ListSingerAdapter;
+import com.example.appmusic.Interface.EventListener;
 import com.example.appmusic.Objects.Singer;
 import com.example.appmusic.R;
 
@@ -17,7 +21,7 @@ import java.util.List;
 
 import static com.example.appmusic.Activity.MainActivity.database;
 
-public class Fragment_CaSi extends Fragment implements SearchView.OnQueryTextListener{
+public class Fragment_CaSi extends Fragment implements SearchView.OnQueryTextListener, EventListener {
     View view;
     GridView gvCaSi;
     ArrayList<Singer> arrayCaSi;
@@ -42,7 +46,7 @@ public class Fragment_CaSi extends Fragment implements SearchView.OnQueryTextLis
     }
     private void SetAdapter(List<Singer> list)
     {
-        adapter = new ListSingerAdapter(getActivity(), R.layout.row_casi, list);
+        adapter = new ListSingerAdapter(getActivity(), R.layout.row_casi, list, Fragment_CaSi.this);
         gvCaSi.setAdapter(adapter);
     }
     public List<Singer> LayDanhSachCaSi()
@@ -86,5 +90,44 @@ public class Fragment_CaSi extends Fragment implements SearchView.OnQueryTextLis
         TimDanhSachCaSi(searchText);
         SetAdapter(arrayTimKiemCaSi);
         return true;
+    }
+
+    @Override
+    public void showalertdialog(int id, String tenbaihat) {
+
+    }
+
+    @Override
+    public void dialogaddplaylist(int idbaihat) {
+
+    }
+
+    @Override
+    public void songclick(int id) {
+
+    }
+
+    @Override
+    public void playlistClick(int id) {
+
+    }
+
+    @Override
+    public void theloaiClick(int id) {
+
+    }
+
+    @Override
+    public void albumClick(int id) {
+
+    }
+
+    @Override
+    public void casiClick(int id) {
+        Intent intent=new Intent(getContext(), PlaySongActivity.class);
+        int key=3;
+        intent.putExtra("key",key);
+        intent.putExtra("id",id);
+        startActivity(intent);
     }
 }

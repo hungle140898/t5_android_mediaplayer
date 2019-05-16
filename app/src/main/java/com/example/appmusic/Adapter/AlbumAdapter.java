@@ -7,19 +7,23 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.appmusic.Interface.EventListener;
 import com.example.appmusic.Objects.Album;
 import com.example.appmusic.R;
 import java.util.List;
 
 public class AlbumAdapter extends BaseAdapter {
+    EventListener listener;
     private Context context;
     private  int layout;
     private List<Album> albumList  ;
-    public AlbumAdapter(Context context,int layout,List<Album> albumList)
+    public AlbumAdapter(Context context,int layout,List<Album> albumList, EventListener listener)
     {
         this.context = context;
         this.layout = layout;
         this.albumList = albumList;
+        this.listener = listener;
     }
 
     @Override
@@ -55,11 +59,18 @@ public class AlbumAdapter extends BaseAdapter {
         {
             viewHolder = (AlbumAdapter.ViewHolder)convertView.getTag();
         }
-        Album album = albumList.get(position);
+        final Album album = albumList.get(position);
         int ImageID = getMipmapResIdByName(album.getHinhAlbum());
         viewHolder.imgview.setImageResource(ImageID);
         viewHolder.txtcasi.setText("K-ICM");
         viewHolder.txttenalbum.setText(album.getTenAlbum());
+        convertView.setOnClickListener(new View.OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                              listener.albumClick(album.getIDAlbum());
+                                           }
+                                       }
+        );
         return convertView;
     }
     public int getMipmapResIdByName(String resName) {

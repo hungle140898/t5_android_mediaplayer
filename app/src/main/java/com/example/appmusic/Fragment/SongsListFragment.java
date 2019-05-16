@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import com.example.appmusic.Activity.PlaySongActivity;
 import com.example.appmusic.Adapter.SongsListAdapter;
-import com.example.appmusic.Model.Song;
+import com.example.appmusic.Objects.Song;
 import com.example.appmusic.R;
 
 public class SongsListFragment extends Fragment {
@@ -30,8 +30,8 @@ public class SongsListFragment extends Fragment {
         mPosition = Integer.parseInt(container.getTag(-16110111).toString());
 
         for (int i = 0; i < arrayList.size(); i++) {
-            song[i] = arrayList.get(i).getTitle();
-            singer[i] = arrayList.get(i).getSinger();
+            song[i] = arrayList.get(i).getTenBaiHat();
+            singer[i] = arrayList.get(i).getTenCaSi();
         }
         SongsListAdapter adapter = new
                 SongsListAdapter(getActivity(), song, singer);

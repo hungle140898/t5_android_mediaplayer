@@ -7,6 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.appmusic.Interface.EventListener;
 import com.example.appmusic.Objects.TheLoai;
 import com.example.appmusic.R;
 
@@ -15,15 +16,17 @@ import java.util.List;
 import java.util.Locale;
 
 public class TheLoaiAdapter extends BaseAdapter {
+    EventListener listener;
     private Context context;
     private  int layout;
     private List<TheLoai> theloaiList  ;
     private ArrayList<TheLoai> theLoaiArrayList;
-    public TheLoaiAdapter(Context context,int layout,List<TheLoai> theloaiList)
+    public TheLoaiAdapter(Context context,int layout,List<TheLoai> theloaiList, EventListener listener)
     {
         this.context = context;
         this.layout = layout;
         this.theloaiList = theloaiList;
+        this.listener = listener;
     }
 
 
@@ -58,9 +61,15 @@ public class TheLoaiAdapter extends BaseAdapter {
             {
                 viewHolder = (ViewHolder)converView.getTag();
             }
-            TheLoai theloai = theloaiList.get(position);
+            final TheLoai theloai = theloaiList.get(position);
             int ImageID = getMipmapResIdByName(theloai.getHinhTheLoai());
             viewHolder.imgview.setImageResource(ImageID);
+            converView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.theloaiClick(theloai.getIDTheLoai());
+                }
+            });
             return converView;
     }
     public int getMipmapResIdByName(String resName) {

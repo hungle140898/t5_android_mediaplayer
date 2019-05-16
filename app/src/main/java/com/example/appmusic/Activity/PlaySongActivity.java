@@ -16,6 +16,8 @@
 
 package com.example.appmusic.Activity;
 
+import android.content.Intent;
+import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -32,12 +34,14 @@ import android.widget.LinearLayout;
 import com.example.appmusic.Adapter.ViewPagerAdapter;
 import com.example.appmusic.Fragment.SongDetailsFragment;
 import com.example.appmusic.Fragment.SongsListFragment;
-import com.example.appmusic.Model.Song;
+import com.example.appmusic.Objects.Song;
 import com.example.appmusic.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import static com.example.appmusic.Activity.MainActivity.database;
 
 
 public class PlaySongActivity extends AppCompatActivity {
@@ -68,14 +72,32 @@ public class PlaySongActivity extends AppCompatActivity {
     }
 
     private void addSong() {
+        Intent intent = this.getIntent();
+        int key = intent.getIntExtra("key", 0);
+        int id = intent.getIntExtra("id", 0);
         arraySong = new ArrayList<>();
-        arraySong.add(new Song("Bom(나만 봄)", "Bolbbalgan4", R.raw.bom));
-        arraySong.add(new Song("Một đêm say", "Thịnh Suy", R.raw.mot_dem_say));
-        arraySong.add(new Song("comethru", "Jeremy Zucker", R.raw.comethru));
-        arraySong.add(new Song("Lạc Trôi", "Sơn Tùng M-TP", R.raw.lac_troi));
-        arraySong.add(new Song("Love the way you lie ft. Rihanna", "Eminem", R.raw.love_the_way_you_lie));
-        arraySong.add(new Song("Nơi này có anh", "Sơn Tùng M-TP", R.raw.noi_nay_co_anh));
-        arraySong.add(new Song("Older", "Sasha Sloan", R.raw.older));
+        switch (key){
+            case 1: {
+                getAllSong();
+                break;
+            }
+            case 2:{
+                getAllSongInPlaylist(id);
+                break;
+            }
+            case 3:{
+                getAllSongBySinger(id);
+                break;
+            }
+            case 4:{
+                getAllSongInAlbum(id);
+                break;
+            }
+            case 5:{
+                getAllSongOfType(id);
+                break;
+            }
+        }
     }
 
     private void mapping() {
@@ -89,9 +111,9 @@ public class PlaySongActivity extends AppCompatActivity {
     }
 
     public void createMediaPlayer() {
-        mediaPlayer = MediaPlayer.create(PlaySongActivity.this, arraySong.get(mPosition).getFile());
-        viewPager.setTag(-16110400, arraySong.get(mPosition).getTitle());
-        viewPager.setTag(-16110401, arraySong.get(mPosition).getSinger());
+        mediaPlayer = MediaPlayer.create(PlaySongActivity.this, getRawResIdByName(arraySong.get(mPosition).getLink()));
+        viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
+        viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
     }
 
     public void setTotalTime() {
@@ -255,5 +277,85 @@ public class PlaySongActivity extends AppCompatActivity {
         });
 
         animation = AnimationUtils.loadAnimation(this, R.anim.disc_rotate);
+    }
+
+    public void getAllSong(){
+        Cursor data = database.getData("SELECT BaiHat.IDBaiHat,BaiHat.TenBaiHat,CaSi.TenCaSi,Album.HinhAlbum, BaiHat.LinkBaiHat FROM BaiHat,CaSi,Album WHERE BaiHat.IDCaSi=CaSi.IDCaSi AND BaiHat.IDAlbum=Album.IDAlbum");
+        arraySong.clear();
+        while (data.moveToNext())
+        {
+            com.example.appmusic.Objects.Song song = new com.example.appmusic.Objects.Song();
+            song.setIDBaiHat(data.getInt(0));
+            song.setTenBaiHat(data.getString(1));
+            song.setTenCaSi(data.getString(2));
+            song.setHinh(data.getString(3));
+            song.setLink(data.getString(4));
+            arraySong.add(song);
+        }
+    }
+
+    public void getAllSongInPlaylist(int id){
+        Cursor data = database.getData("SELECT BaiHat.IDBaiHat,BaiHat.TenBaiHat,CaSi.TenCaSi,BaiHat.LinkBaiHat FROM Playlist_BaiHat INNER JOIN BaiHat ON Playlist_BaiHat.IDBaiHat=BaiHat.IDBaiHat INNER JOIN CaSi ON CaSi.IDCaSi=BaiHat.IDCaSi WHERE Playlist_BaiHat.IDPlayList=" + id);
+        arraySong.clear();
+        while (data.moveToNext())
+        {
+            com.example.appmusic.Objects.Song song = new com.example.appmusic.Objects.Song();
+            song.setIDBaiHat(data.getInt(0));
+            song.setTenBaiHat(data.getString(1));
+            song.setTenCaSi(data.getString(2));
+            song.setHinh(data.getString(3));
+            song.setLink(data.getString(4));
+            arraySong.add(song);
+        }
+    }
+
+    public void getAllSongBySinger(int id){
+        Cursor data = database.getData("SELECT BaiHat.IDBaiHat,BaiHat.TenBaiHat,CaSi.TenCaSi,BaiHat.LinkBaiHat FROM BaiHat INNER JOIN CaSi ON BaiHat.IDCaSi=CaSi.IDCaSi WHERE CaSi.IDCaSi=" + id);
+        arraySong.clear();
+        while (data.moveToNext())
+        {
+            com.example.appmusic.Objects.Song song = new com.example.appmusic.Objects.Song();
+            song.setIDBaiHat(data.getInt(0));
+            song.setTenBaiHat(data.getString(1));
+            song.setTenCaSi(data.getString(2));
+            song.setLink(data.getString(3));
+            arraySong.add(song);
+        }
+    }
+
+    public void getAllSongInAlbum(int id){
+        Cursor data = database.getData("SELECT BaiHat.IDBaiHat,BaiHat.TenBaiHat,CaSi.TenCaSi,BaiHat.LinkBaiHat  FROM BaiHat INNER JOIN Album ON BaiHat.IDAlbum=Album.IDAlbum INNER JOIN CaSi ON CaSi.IDCaSi=BaiHat.IDCaSi WHERE Album.IDAlbum=" + id);
+        arraySong.clear();
+        while (data.moveToNext())
+        {
+            com.example.appmusic.Objects.Song song = new com.example.appmusic.Objects.Song();
+            song.setIDBaiHat(data.getInt(0));
+            song.setTenBaiHat(data.getString(1));
+            song.setTenCaSi(data.getString(2));
+            song.setLink(data.getString(3));
+            arraySong.add(song);
+        }
+    }
+
+    public void getAllSongOfType(int id){
+        Cursor data = database.getData("SELECT BaiHat.IDBaiHat,BaiHat.TenBaiHat,CaSi.TenCaSi,BaiHat.LinkBaiHat  FROM BaiHat INNER JOIN TheLoai ON BaiHat.IDTheLoai =TheLoai.IDTheLoai INNER JOIN CaSi ON CaSi.IDCaSi=BaiHat.IDCaSi WHERE TheLoai.IDTheLoai=" + id);
+        arraySong.clear();
+        while (data.moveToNext())
+        {
+            com.example.appmusic.Objects.Song song = new com.example.appmusic.Objects.Song();
+            song.setIDBaiHat(data.getInt(0));
+            song.setTenBaiHat(data.getString(1));
+            song.setTenCaSi(data.getString(2));
+            song.setLink(data.getString(3));
+            arraySong.add(song);
+        }
+    }
+
+    public int getRawResIdByName(String resName)  {
+        String pkgName = this.getPackageName();
+        // Return 0 if not found.
+        // Trả về 0 nếu không tìm thấy.
+        int resID = this.getResources().getIdentifier(resName, "raw", pkgName);
+        return resID;
     }
 }

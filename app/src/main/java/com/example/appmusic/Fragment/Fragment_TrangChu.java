@@ -209,11 +209,36 @@ public class Fragment_TrangChu extends Fragment implements EventListener,SearchV
         SetAdapter(arrayTimKiemBaiHat);
         return true;
     }
+
+    @Override
     public void songclick(int id)
     {
         Intent intent=new Intent(getContext(), PlaySongActivity.class);
-        intent.putExtra("text","abc");
+        int key=1;
+        intent.putExtra("key",key);
+        intent.putExtra("id",id);
         startActivity(intent);
         //Toast.makeText(getActivity(),String.valueOf(id),Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void playlistClick(int id) {
+
+    }
+
+    @Override
+    public void theloaiClick(int id) {
+
+    }
+
+    @Override
+    public void albumClick(int id) {
+
+    }
+
+    @Override
+    public void casiClick(int id) {
+
+    }
+
 }

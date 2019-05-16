@@ -16,8 +16,19 @@
 
 package com.example.appmusic.Activity;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.IdRes;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +36,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RemoteViews;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -37,6 +49,9 @@ import com.example.appmusic.R;
 
 public class PlaySongActivity extends AppCompatActivity {
 
+    public final String ACTION_NOTIFICATION_BUTTON_CLICK = "btnClick";
+    public final String EXTRA_BUTTON_CLICKED = "data";
+    private static final String CHANNEL_ID = "TEST_CHANNEL";
     TextView txtTotalTime, txtCurrentTime, txtSongName, txtSingerName;
     ImageView imgSong;
     ImageButton btnReplay, btnPrev, btnNext, btnPlay, btnShuffle;
@@ -58,6 +73,9 @@ public class PlaySongActivity extends AppCompatActivity {
         animation = AnimationUtils.loadAnimation(this, R.anim.disc_rotate);
 
         createMediaPlayer();
+        createNotificationChannel();
+        registerReceiver(receiver,new IntentFilter(
+                ACTION_NOTIFICATION_BUTTON_CLICK));
 
         sbSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -164,6 +182,7 @@ public class PlaySongActivity extends AppCompatActivity {
         }
         setTotalTime();
         updateCurrentTime();
+        showNotification();
     }
 
     public void onNext(View v) {
@@ -179,6 +198,7 @@ public class PlaySongActivity extends AppCompatActivity {
         btnPlay.setImageResource(R.drawable.pause);
         setTotalTime();
         updateCurrentTime();
+        showNotification();
     }
 
     public void onPrev(View v) {
@@ -194,6 +214,7 @@ public class PlaySongActivity extends AppCompatActivity {
         btnPlay.setImageResource(R.drawable.pause);
         setTotalTime();
         updateCurrentTime();
+        showNotification();
     }
 
     public void onRepeat(View v) {
@@ -220,6 +241,76 @@ public class PlaySongActivity extends AppCompatActivity {
             isShuffle = false;
             btnShuffle.setImageResource(R.drawable.no_shuffle);
             addSong();
+        }
+    }
+    private PendingIntent onButtonNotificationClick(@IdRes int id) {
+        Intent intent = new Intent(ACTION_NOTIFICATION_BUTTON_CLICK);
+        intent.putExtra(EXTRA_BUTTON_CLICKED, id);
+        return PendingIntent.getBroadcast(this, id, intent, 0);
+    }
+
+    private void showNotification() {
+
+        RemoteViews notificationLayout =
+                new RemoteViews(getPackageName(), R.layout.notification_custom);
+
+        notificationLayout.setTextViewText(R.id.tenbaihat,txtSongName.getText());
+        if(mediaPlayer.isPlaying()){
+            notificationLayout.setImageViewResource(R.id.btnPlay_noti,R.drawable.pause);
+        }
+        else {
+            notificationLayout.setImageViewResource(R.id.btnPlay_noti,R.drawable.play);
+        }
+
+        notificationLayout.setOnClickPendingIntent(R.id.btnPre_noti,
+                onButtonNotificationClick(R.id.btnPre_noti));
+        notificationLayout.setOnClickPendingIntent(R.id.btnPlay_noti,
+                onButtonNotificationClick(R.id.btnPlay_noti));
+        notificationLayout.setOnClickPendingIntent(R.id.btnNext_noti,
+                onButtonNotificationClick(R.id.btnNext_noti));
+
+        Notification
+                notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setCustomContentView(notificationLayout)
+                .build();
+        NotificationManager notificationManager =
+                (android.app.NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(1, notification);
+    }
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override public void onReceive(Context context, Intent intent) {
+            int id = intent.getIntExtra(EXTRA_BUTTON_CLICKED, -1);
+            switch (id) {
+                case R.id.btnPre_noti:
+                    onPrev(btnPrev);
+                    updateCurrentTime();
+                    break;
+                case R.id.btnPlay_noti:
+                    onPlay(btnPlay);
+                    break;
+                case R.id.btnNext_noti:
+                    onNext(btnNext);
+                    updateCurrentTime();
+                    break;
+            }
+        }
+    };
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "abc";
+            String description = "def";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 }

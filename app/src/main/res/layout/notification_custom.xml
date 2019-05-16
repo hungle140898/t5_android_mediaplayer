@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:background="@drawable/backgroundfrag"
+    android:weightSum="5"
+    android:minHeight="112dp">
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="129dp"
+        android:layout_height="80dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:src="@drawable/abc" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="4">
+        <TextView
+            android:id="@+id/tenbaihat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/imgLogo"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:textColor="#FFFFFF"
+            android:text="Ten bai hat"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tenbaihat"
+            android:layout_toEndOf="@+id/imgLogo"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/btnPre_noti"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/custom_notifibtn"
+                android:layout_margin="5dp"
+                android:src="@drawable/rewind" />
+            <ImageButton
+                android:id="@+id/btnPlay_noti"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/custom_notifibtn"
+                android:src="@drawable/pause" />
+            <ImageButton
+                android:id="@+id/btnNext_noti"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/custom_notifibtn"
+                android:src="@drawable/fast_forward" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

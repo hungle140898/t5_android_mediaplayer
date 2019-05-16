@@ -24,7 +24,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -63,8 +62,7 @@ public class PlaySongActivity extends AppCompatActivity {
     public final String ACTION_NOTIFICATION_BUTTON_CLICK = "btnClick";
     public final String EXTRA_BUTTON_CLICKED = "data";
     private static final String CHANNEL_ID = "TEST_CHANNEL";
-    TextView txtTotalTime, txtCurrentTime, txtSongName, txtSingerName;
-    ImageView imgSong;
+    TextView txtSongName;
     ImageButton btnReplay, btnPrev, btnNext, btnPlay, btnShuffle;
     ArrayList<Song> arraySong;
     public int mPosition = 0;
@@ -130,6 +128,7 @@ public class PlaySongActivity extends AppCompatActivity {
         btnReplay = findViewById(R.id.btnLapLai);
         btnShuffle = findViewById(R.id.btnNgauNhien);
         sliderDotspanel = findViewById(R.id.SliderDots);
+
     }
 
     public void createMediaPlayer() {
@@ -185,11 +184,11 @@ public class PlaySongActivity extends AppCompatActivity {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
             btnPlay.setImageResource(R.drawable.play);
-            //imgSong.clearAnimation();
+
         } else {
             mediaPlayer.start();
             btnPlay.setImageResource(R.drawable.pause);
-            //imgSong.startAnimation(animation);
+
         }
         setTotalTime();
         updateCurrentTime();
@@ -269,7 +268,7 @@ public class PlaySongActivity extends AppCompatActivity {
         RemoteViews notificationLayout =
                 new RemoteViews(getPackageName(), R.layout.notification_custom);
 
-        notificationLayout.setTextViewText(R.id.tenbaihat,txtSongName.getText());
+        notificationLayout.setTextViewText(R.id.tenbaihat, arraySong.get(mPosition).getTenBaiHat());
         if(mediaPlayer.isPlaying()){
             notificationLayout.setImageViewResource(R.id.btnPlay_noti,R.drawable.pause);
         }

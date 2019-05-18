@@ -211,12 +211,13 @@ public class Fragment_TrangChu extends Fragment implements EventListener,SearchV
     }
 
     @Override
-    public void songclick(int id)
+    public void songclick(int id, int index)
     {
         Intent intent=new Intent(getContext(), PlaySongActivity.class);
         int key=1;
         intent.putExtra("key",key);
         intent.putExtra("id",id);
+        intent.putExtra("index",index);
         startActivity(intent);
         //Toast.makeText(getActivity(),String.valueOf(id),Toast.LENGTH_LONG).show();
     }

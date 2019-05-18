@@ -16,11 +16,13 @@
 
 package com.example.appmusic.Activity;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -40,7 +42,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 
@@ -62,7 +63,6 @@ public class PlaySongActivity extends AppCompatActivity {
     public final String ACTION_NOTIFICATION_BUTTON_CLICK = "btnClick";
     public final String EXTRA_BUTTON_CLICKED = "data";
     private static final String CHANNEL_ID = "TEST_CHANNEL";
-    TextView txtSongName;
     ImageButton btnReplay, btnPrev, btnNext, btnPlay, btnShuffle;
     ArrayList<Song> arraySong;
     public int mPosition = 0;
@@ -72,12 +72,23 @@ public class PlaySongActivity extends AppCompatActivity {
     LinearLayout sliderDotspanel;
     private ImageView[] dots;
     ViewPager viewPager;
+    private int temp = 0;
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playsong);
-
         mapping();
         addSong();
         setLayout();
@@ -95,10 +106,12 @@ public class PlaySongActivity extends AppCompatActivity {
         Intent intent = this.getIntent();
         int key = intent.getIntExtra("key", 0);
         int id = intent.getIntExtra("id", 0);
+        int index = intent.getIntExtra("index", 0);
         arraySong = new ArrayList<>();
         switch (key){
             case 1: {
                 getAllSong();
+                mPosition = index;
                 break;
             }
             case 2:{
@@ -184,11 +197,11 @@ public class PlaySongActivity extends AppCompatActivity {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
             btnPlay.setImageResource(R.drawable.play);
-
+            viewPager.setTag(-16110119, 1);
         } else {
             mediaPlayer.start();
             btnPlay.setImageResource(R.drawable.pause);
-
+            viewPager.setTag(-16110119, 0);
         }
         setTotalTime();
         updateCurrentTime();
@@ -250,11 +263,29 @@ public class PlaySongActivity extends AppCompatActivity {
         if (!isShuffle) {
             isShuffle = true;
             btnShuffle.setImageResource(R.drawable.shuffle);
+            temp = arraySong.get(mPosition).getIDBaiHat();
             Collections.shuffle(arraySong);
+            for (int i =0; i< arraySong.size(); i++){
+                if(temp == arraySong.get(i).getIDBaiHat()) {
+                    mPosition = i;
+                    break;
+                }
+            }
+            viewPager.setTag(-16110111, mPosition);
+            viewPager.setTag(-16110110, arraySong);
+
         } else {
             isShuffle = false;
             btnShuffle.setImageResource(R.drawable.no_shuffle);
+            temp = arraySong.get(mPosition).getIDBaiHat();
             addSong();
+            for (int i =0; i< arraySong.size(); i++){
+                if(temp == arraySong.get(i).getIDBaiHat())
+                    mPosition = i;
+                break;
+            }
+            viewPager.setTag(-16110111, mPosition);
+            viewPager.setTag(-16110110, arraySong);
         }
     }
     private PendingIntent onButtonNotificationClick(@IdRes int id) {
@@ -397,8 +428,7 @@ public class PlaySongActivity extends AppCompatActivity {
             song.setIDBaiHat(data.getInt(0));
             song.setTenBaiHat(data.getString(1));
             song.setTenCaSi(data.getString(2));
-            song.setHinh(data.getString(3));
-            song.setLink(data.getString(4));
+            song.setLink(data.getString(3));
             arraySong.add(song);
         }
     }

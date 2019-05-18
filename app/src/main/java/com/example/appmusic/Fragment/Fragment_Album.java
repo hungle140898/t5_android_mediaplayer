@@ -103,7 +103,7 @@ public class Fragment_Album extends Fragment implements SearchView.OnQueryTextLi
     }
 
     @Override
-    public void songclick(int id) {
+    public void songclick(int id, int index) {
 
     }
 

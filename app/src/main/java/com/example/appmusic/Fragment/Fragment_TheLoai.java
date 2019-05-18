@@ -101,7 +101,7 @@ public class Fragment_TheLoai extends Fragment implements SearchView.OnQueryText
     }
 
     @Override
-    public void songclick(int id) {
+    public void songclick(int id, int index) {
 
     }
 

@@ -103,7 +103,7 @@ public class Fragment_CaSi extends Fragment implements SearchView.OnQueryTextLis
     }
 
     @Override
-    public void songclick(int id) {
+    public void songclick(int id, int index) {
 
     }
 

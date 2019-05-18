@@ -73,6 +73,7 @@ public class ListSongAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         final Song song = songList.get(position);
+        final int index = position;
         int ImageId = getMipmapResIdByName(song.getHinh());
         viewHolder.iv_Avatar.setImageResource(ImageId);
         viewHolder.tv_tenbaihat.setText(song.getTenBaiHat());
@@ -92,7 +93,7 @@ public class ListSongAdapter extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.songclick(song.getIDBaiHat());
+                listener.songclick(song.getIDBaiHat(), index);
             }
         });
         return convertView;

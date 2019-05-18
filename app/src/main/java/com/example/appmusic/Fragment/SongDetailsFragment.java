@@ -6,6 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -17,7 +20,9 @@ import java.text.SimpleDateFormat;
 
 public class SongDetailsFragment extends Fragment{
     TextView txtTotalTime, txtCurrentTime, txtSongName, txtSingerName;
+    ImageView img;
     SeekBar sbSong;
+    Animation animation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,7 +34,10 @@ public class SongDetailsFragment extends Fragment{
         txtSongName = view.findViewById(R.id.txtTenBaiHat);
         txtSingerName = view.findViewById(R.id.txtTenCaSi);
         sbSong = view.findViewById(R.id.sbBaiHat);
+        img = view.findViewById(R.id.imgAnhBaiHat);
+        animation = AnimationUtils.loadAnimation(getActivity(), R.anim.disc_rotate);
         Handler progressBarHandler = new Handler();
+        String isPlay = "0";
 
         txtSongName.setText(container.getTag(-16110400).toString());
         txtSingerName.setText(container.getTag(-16110401).toString());

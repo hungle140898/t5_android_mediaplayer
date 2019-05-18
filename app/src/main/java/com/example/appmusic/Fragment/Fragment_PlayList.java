@@ -158,7 +158,7 @@ public class Fragment_PlayList extends Fragment implements SearchView.OnQueryTex
     }
 
     @Override
-    public void songclick(int id) {
+    public void songclick(int id, int index) {
 
     }
 

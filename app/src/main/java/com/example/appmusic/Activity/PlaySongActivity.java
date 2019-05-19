@@ -51,6 +51,7 @@ import com.example.appmusic.Service.PlaySongService;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static com.example.appmusic.Activity.MainActivity.database;
 
@@ -69,7 +70,7 @@ public class PlaySongActivity extends AppCompatActivity {
     Animation animation;
     LinearLayout sliderDotspanel;
     private ImageView[] dots;
-    ViewPager viewPager;
+    public ViewPager viewPager;
     private int temp = 0;
 
     @Override
@@ -181,6 +182,33 @@ public class PlaySongActivity extends AppCompatActivity {
                 viewPager.setTag(-16110404, psService.getCurrentPosition());
                 viewPager.setTag(-16110111, mPosition);
                 viewPager.getAdapter().notifyDataSetChanged();
+                if (psService.getCurrentPosition() > psService.getDuration()) {
+                    if (!isReplayOne){
+                        mPosition++;
+                        psService.playNext();
+                    }
+                    if (mPosition > arraySong.size() - 1) {
+                        if(!isReplay) {
+                            mPosition = 0;
+                            viewPager.setTag(-16110111, mPosition);
+                            viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
+                            viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
+                            setTotalTime();
+                            updateCurrentTime();
+                            psService.pausePlayer();
+                            btnPlay.setImageResource(R.drawable.play);
+                            return;
+                        }else {
+                            mPosition = 0;
+                        }
+                    }
+                    psService.go();
+                    btnPlay.setImageResource(R.drawable.pause);
+                    viewPager.setTag(-16110111, mPosition);
+                    viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
+                    viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
+                    setTotalTime();
+                }
                 updateCurrentTime();
             }
         }, 500);
@@ -190,8 +218,7 @@ public class PlaySongActivity extends AppCompatActivity {
         if (!psService.isPlaying()) {
             psService.go();
             btnPlay.setImageResource(R.drawable.pause);
-        }
-        else {
+        } else {
             psService.pausePlayer();
             btnPlay.setImageResource(R.drawable.play);
         }
@@ -208,7 +235,6 @@ public class PlaySongActivity extends AppCompatActivity {
         viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
         viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
         setTotalTime();
-//        updateCurrentTime();
 //        showNotification();
     }
 
@@ -221,7 +247,6 @@ public class PlaySongActivity extends AppCompatActivity {
         viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
         viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
         setTotalTime();
-//        updateCurrentTime();
 //        showNotification();
     }
 
@@ -230,8 +255,8 @@ public class PlaySongActivity extends AppCompatActivity {
             isReplay = true;
             btnReplay.setImageResource(R.drawable.repeat);
         } else if (isReplay && !isReplayOne) {
-            isReplay = false;
             isReplayOne = true;
+            isReplay = false;
             btnReplay.setImageResource(R.drawable.repeat_one);
         } else {
             isReplayOne = false;
@@ -241,34 +266,37 @@ public class PlaySongActivity extends AppCompatActivity {
     }
 
     public void onShuffle(View v) {
-//        if (!isShuffle) {
-//            isShuffle = true;
-//            btnShuffle.setImageResource(R.drawable.shuffle);
-//            temp = arraySong.get(mPosition).getIDBaiHat();
-//            Collections.shuffle(arraySong);
-//            for (int i = 0; i < arraySong.size(); i++) {
-//                if (temp == arraySong.get(i).getIDBaiHat()) {
-//                    mPosition = i;
-//                    break;
-//                }
-//            }
-//            viewPager.setTag(-16110111, mPosition);
-//            viewPager.setTag(-16110110, arraySong);
-//
-//        } else {
-//            isShuffle = false;
-//            btnShuffle.setImageResource(R.drawable.no_shuffle);
-//            temp = arraySong.get(mPosition).getIDBaiHat();
-//            addSong();
-//            for (int i = 0; i < arraySong.size(); i++) {
-//                if (temp == arraySong.get(i).getIDBaiHat())
-//                    mPosition = i;
-//                break;
-//            }
-//            viewPager.setTag(-16110111, mPosition);
-//            viewPager.setTag(-16110110, arraySong);
-//        }
-        psService.setShuffle();
+        if (!isShuffle) {
+            isShuffle = true;
+            btnShuffle.setImageResource(R.drawable.shuffle);
+            temp = arraySong.get(mPosition).getIDBaiHat();
+            Collections.shuffle(arraySong);
+            for (int i = 0; i < arraySong.size(); i++) {
+                if (temp == arraySong.get(i).getIDBaiHat()) {
+                    mPosition = i;
+                    break;
+                }
+            }
+            psService.setList(arraySong);
+            psService.setSong(mPosition);
+            viewPager.setTag(-16110111, mPosition);
+            viewPager.setTag(-16110110, arraySong);
+        } else {
+            isShuffle = false;
+            btnShuffle.setImageResource(R.drawable.no_shuffle);
+            temp = arraySong.get(mPosition).getIDBaiHat();
+            addSong();
+            for (int i = 0; i < arraySong.size(); i++) {
+                if (temp == arraySong.get(i).getIDBaiHat()) {
+                    mPosition = i;
+                    break;
+                }
+            }
+            psService.setList(arraySong);
+            psService.setSong(mPosition);
+            viewPager.setTag(-16110111, mPosition);
+            viewPager.setTag(-16110110, arraySong);
+        }
     }
 
     private PendingIntent onButtonNotificationClick(@IdRes int id) {

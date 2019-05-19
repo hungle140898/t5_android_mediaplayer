@@ -42,7 +42,13 @@ public class SongsListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
+                ((PlaySongActivity) getActivity()).mPosition = position;
+                ((PlaySongActivity) getActivity()).psService.setSong(position);
+                ((PlaySongActivity) getActivity()).psService.playSong();
+                ((PlaySongActivity) getActivity()).psService.go();
+                ((PlaySongActivity) getActivity()).viewPager.setTag(-16110400, arrayList.get(position).getTenBaiHat());
+                ((PlaySongActivity) getActivity()).viewPager.setTag(-16110401, arrayList.get(position).getTenCaSi());
+                ((PlaySongActivity) getActivity()).setTotalTime();
             }
         });
 

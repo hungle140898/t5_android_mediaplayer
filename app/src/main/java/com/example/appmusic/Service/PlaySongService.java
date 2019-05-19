@@ -15,15 +15,15 @@ import com.example.appmusic.R;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class PlaySongService extends Service{
+public class PlaySongService extends Service implements
+        MediaPlayer.OnPreparedListener {
 
     private final IBinder musicBind = new PlaySongBinder();
     public int mPosition;
     public MediaPlayer mediaPlayer;
     ArrayList<Song> arraySong;
     private String songTitle = "";
-    private boolean shuffle = false;
-    private Random rand;
+    private static final int NOTIFY_ID = 1;
 
     public class PlaySongBinder extends Binder {
 
@@ -49,7 +49,7 @@ public class PlaySongService extends Service{
         super.onCreate();
         mPosition = 0;
         mediaPlayer = new MediaPlayer();
-        rand = new Random();
+        mediaPlayer.setOnPreparedListener(this);
     }
 
     public void setList(ArrayList<Song> Songs) {
@@ -66,7 +66,6 @@ public class PlaySongService extends Service{
     }
 
     public void playPrev() {
-
         if (mPosition == 0) mPosition = arraySong.size() - 1;
         else mPosition--;
         playSong();
@@ -74,22 +73,36 @@ public class PlaySongService extends Service{
     }
 
     public void playNext() {
-        if (shuffle) {
-            int newSong = mPosition;
-            while (newSong == mPosition) {
-                newSong = rand.nextInt(arraySong.size());
-            }
-            mPosition = newSong;
-        } else {
-            if (mPosition == arraySong.size() - 1) mPosition = 0;
-            else mPosition++;
-        }
+        if (mPosition == arraySong.size() - 1) mPosition = 0;
+        else mPosition++;
         playSong();
         go();
     }
 
     public void setSong(int songIndex) {
         mPosition = songIndex;
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        //start playback
+        mp.start();
+        Intent notIntent = new Intent(this, MainActivity.class);
+        notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendInt = PendingIntent.getActivity(this, 0,
+                notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Notification.Builder builder = new Notification.Builder(this);
+
+        builder.setContentIntent(pendInt)
+                .setSmallIcon(R.drawable.play)
+                .setTicker(songTitle)
+                .setOngoing(true)
+                .setContentTitle("Playing")
+                .setContentText(songTitle);
+        Notification not = builder.build();
+
+        startForeground(NOTIFY_ID, not);
     }
 
     @Override
@@ -127,11 +140,6 @@ public class PlaySongService extends Service{
 
     public void go() {
         mediaPlayer.start();
-    }
-
-    public void setShuffle() {
-        if (shuffle) shuffle = false;
-        else shuffle = true;
     }
 
 }

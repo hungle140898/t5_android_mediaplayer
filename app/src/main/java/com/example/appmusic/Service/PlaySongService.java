@@ -1,12 +1,21 @@
 package com.example.appmusic.Service;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
+import android.support.annotation.IdRes;
+import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
 
 import com.example.appmusic.Activity.MainActivity;
 import com.example.appmusic.Objects.Song;
@@ -16,7 +25,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class PlaySongService extends Service{
-
+    public final String ACTION_NOTIFICATION_BUTTON_CLICK = "btnClick";
+    public final String EXTRA_BUTTON_CLICKED = "data";
+    private static final String CHANNEL_ID = "TEST_CHANNEL";
     private final IBinder musicBind = new PlaySongBinder();
     public int mPosition;
     public MediaPlayer mediaPlayer;
@@ -50,6 +61,8 @@ public class PlaySongService extends Service{
         mPosition = 0;
         mediaPlayer = new MediaPlayer();
         rand = new Random();
+        registerReceiver(receiver,new IntentFilter(
+                        ACTION_NOTIFICATION_BUTTON_CLICK));
     }
 
     public void setList(ArrayList<Song> Songs) {
@@ -134,4 +147,70 @@ public class PlaySongService extends Service{
         else shuffle = true;
     }
 
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "abc";
+            String description = "def";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+    private PendingIntent onButtonNotificationClick(@IdRes int id) {
+        Intent intent = new Intent(ACTION_NOTIFICATION_BUTTON_CLICK);
+        intent.putExtra(EXTRA_BUTTON_CLICKED, id);
+        return PendingIntent.getBroadcast(this, id, intent, 0);
+    }
+
+    private void showNotification() {
+
+        RemoteViews notificationLayout =
+                new RemoteViews(getPackageName(), R.layout.notification_custom);
+
+        notificationLayout.setTextViewText(R.id.tenbaihat, arraySong.get(mPosition).getTenBaiHat());
+        if (mediaPlayer.isPlaying()) {
+            notificationLayout.setImageViewResource(R.id.btnPlay_noti, R.drawable.pause);
+        } else {
+            notificationLayout.setImageViewResource(R.id.btnPlay_noti, R.drawable.play);
+        }
+
+        notificationLayout.setOnClickPendingIntent(R.id.btnPre_noti,
+                onButtonNotificationClick(R.id.btnPre_noti));
+        notificationLayout.setOnClickPendingIntent(R.id.btnPlay_noti,
+                onButtonNotificationClick(R.id.btnPlay_noti));
+        notificationLayout.setOnClickPendingIntent(R.id.btnNext_noti,
+                onButtonNotificationClick(R.id.btnNext_noti));
+
+        Notification
+                notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setCustomContentView(notificationLayout)
+                .build();
+        NotificationManager notificationManager =
+                (android.app.NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(1, notification);
+    }
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override public void onReceive(Context context, Intent intent) {
+            int id = intent.getIntExtra(EXTRA_BUTTON_CLICKED, -1);
+            switch (id) {
+                case R.id.btnPre_noti:
+                    playPrev();
+                    break;
+                case R.id.btnPlay_noti:
+                    playSong();
+                    break;
+                case R.id.btnNext_noti:
+                    playNext();
+                    break;
+            }
+        }
+    };
 }

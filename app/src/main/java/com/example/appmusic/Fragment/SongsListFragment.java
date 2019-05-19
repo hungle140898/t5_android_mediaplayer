@@ -42,10 +42,7 @@ public class SongsListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                ((PlaySongActivity) getActivity()).mPosition = position;
-                ((PlaySongActivity) getActivity()).mediaPlayer.reset();
-                ((PlaySongActivity) getActivity()).createMediaPlayer();
-                ((PlaySongActivity) getActivity()).onPlay(view);
+
             }
         });
 

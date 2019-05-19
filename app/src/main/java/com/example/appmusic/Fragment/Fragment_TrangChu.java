@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,8 @@ import com.example.appmusic.Objects.PlayList;
 import com.example.appmusic.Objects.Song;
 import com.example.appmusic.R;
 import com.example.appmusic.Interface.EventListener;
+import com.example.appmusic.Service.PlaySongService;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +47,7 @@ public class Fragment_TrangChu extends Fragment implements EventListener,SearchV
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_trangchu, container, false);
@@ -213,13 +217,12 @@ public class Fragment_TrangChu extends Fragment implements EventListener,SearchV
     @Override
     public void songclick(int id, int index)
     {
-        Intent intent=new Intent(getContext(), PlaySongActivity.class);
+        Intent intent= new Intent(getContext(), PlaySongActivity.class);
         int key=1;
         intent.putExtra("key",key);
         intent.putExtra("id",id);
         intent.putExtra("index",index);
         startActivity(intent);
-        //Toast.makeText(getActivity(),String.valueOf(id),Toast.LENGTH_LONG).show();
     }
 
     @Override

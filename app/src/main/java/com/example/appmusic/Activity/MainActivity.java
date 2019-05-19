@@ -1,4 +1,5 @@
 package com.example.appmusic.Activity;
+import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,7 @@ import com.example.appmusic.Fragment.Fragment_PlayList;
 import com.example.appmusic.Fragment.Fragment_TheLoai;
 import com.example.appmusic.Fragment.Fragment_TrangChu;
 import com.example.appmusic.R;
-
+import com.example.appmusic.Service.PlaySongService;
 
 
 public class MainActivity extends AppCompatActivity {

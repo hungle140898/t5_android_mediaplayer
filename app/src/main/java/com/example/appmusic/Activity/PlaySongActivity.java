@@ -20,9 +20,11 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.Build;
@@ -82,8 +84,8 @@ public class PlaySongActivity extends AppCompatActivity {
         setLayout();
         createMediaPlayer();
         createNotificationChannel();
-        //registerReceiver(receiver,new IntentFilter(
-        //        ACTION_NOTIFICATION_BUTTON_CLICK));
+        registerReceiver(receiver,new IntentFilter(
+                ACTION_NOTIFICATION_BUTTON_CLICK));
 
         viewPager.setTag(-16110110, arraySong);
         viewPager.setTag(-16110111, mPosition);
@@ -100,6 +102,7 @@ public class PlaySongActivity extends AppCompatActivity {
             psService.playSong();
             psService.go();
             setTotalTime();
+            showNotification();
             btnPlay.setImageResource(R.drawable.pause);
             updateCurrentTime();
         }
@@ -223,7 +226,7 @@ public class PlaySongActivity extends AppCompatActivity {
             btnPlay.setImageResource(R.drawable.play);
         }
         updateCurrentTime();
-//        showNotification();
+        showNotification();
     }
 
     public void onNext(View v) {
@@ -235,7 +238,7 @@ public class PlaySongActivity extends AppCompatActivity {
         viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
         viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
         setTotalTime();
-//        showNotification();
+        showNotification();
     }
 
     public void onPrev(View v) {
@@ -247,7 +250,7 @@ public class PlaySongActivity extends AppCompatActivity {
         viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
         viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
         setTotalTime();
-//        showNotification();
+        showNotification();
     }
 
     public void onRepeat(View v) {
@@ -305,53 +308,54 @@ public class PlaySongActivity extends AppCompatActivity {
         return PendingIntent.getBroadcast(this, id, intent, 0);
     }
 
-//    private void showNotification() {
-//
-//        RemoteViews notificationLayout =
-//                new RemoteViews(getPackageName(), R.layout.notification_custom);
-//
-//        notificationLayout.setTextViewText(R.id.tenbaihat, arraySong.get(mPosition).getTenBaiHat());
-//        if (mediaPlayer.isPlaying()) {
-//            notificationLayout.setImageViewResource(R.id.btnPlay_noti, R.drawable.pause);
-//        } else {
-//            notificationLayout.setImageViewResource(R.id.btnPlay_noti, R.drawable.play);
-//        }
-//
-//        notificationLayout.setOnClickPendingIntent(R.id.btnPre_noti,
-//                onButtonNotificationClick(R.id.btnPre_noti));
-//        notificationLayout.setOnClickPendingIntent(R.id.btnPlay_noti,
-//                onButtonNotificationClick(R.id.btnPlay_noti));
-//        notificationLayout.setOnClickPendingIntent(R.id.btnNext_noti,
-//                onButtonNotificationClick(R.id.btnNext_noti));
-//
-//        Notification
-//                notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-//                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-//                .setSmallIcon(R.mipmap.ic_launcher)
-//                .setCustomContentView(notificationLayout)
-//                .build();
-//        NotificationManager notificationManager =
-//                (android.app.NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-//        notificationManager.notify(1, notification);
-//    }
-//    private BroadcastReceiver receiver = new BroadcastReceiver() {
-//        @Override public void onReceive(Context context, Intent intent) {
-//            int id = intent.getIntExtra(EXTRA_BUTTON_CLICKED, -1);
-//            switch (id) {
-//                case R.id.btnPre_noti:
-//                    onPrev(btnPrev);
-//                    updateCurrentTime();
-//                    break;
-//                case R.id.btnPlay_noti:
-//                    onPlay(btnPlay);
-//                    break;
-//                case R.id.btnNext_noti:
-//                    onNext(btnNext);
-//                    updateCurrentTime();
-//                    break;
-//            }
-//        }
-//    };
+    private void showNotification() {
+
+        RemoteViews notificationLayout =
+                new RemoteViews(getPackageName(), R.layout.notification_custom);
+
+        notificationLayout.setTextViewText(R.id.tenbaihat, arraySong.get(mPosition).getTenBaiHat());
+        if (psService.isPlaying()) {
+            notificationLayout.setImageViewResource(R.id.btnPlay_noti, R.drawable.pause);
+        } else {
+            notificationLayout.setImageViewResource(R.id.btnPlay_noti, R.drawable.play);
+        }
+
+        notificationLayout.setOnClickPendingIntent(R.id.btnPre_noti,
+                onButtonNotificationClick(R.id.btnPre_noti));
+        notificationLayout.setOnClickPendingIntent(R.id.btnPlay_noti,
+                onButtonNotificationClick(R.id.btnPlay_noti));
+        notificationLayout.setOnClickPendingIntent(R.id.btnNext_noti,
+                onButtonNotificationClick(R.id.btnNext_noti));
+
+        Notification
+                notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setCustomContentView(notificationLayout)
+                .setPriority(NotificationManager.IMPORTANCE_LOW)
+                .build();
+        NotificationManager notificationManager =
+                (android.app.NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(1, notification);
+    }
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override public void onReceive(Context context, Intent intent) {
+            int id = intent.getIntExtra(EXTRA_BUTTON_CLICKED, -1);
+            switch (id) {
+                case R.id.btnPre_noti:
+                    onPrev(btnPrev);
+                    updateCurrentTime();
+                    break;
+                case R.id.btnPlay_noti:
+                    onPlay(btnPlay);
+                    break;
+                case R.id.btnNext_noti:
+                    onNext(btnNext);
+                    updateCurrentTime();
+                    break;
+            }
+        }
+    };
 
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because

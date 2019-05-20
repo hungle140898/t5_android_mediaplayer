@@ -16,22 +16,13 @@
 
 package com.example.appmusic.Activity;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.IdRes;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -41,7 +32,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RemoteViews;
 import android.widget.LinearLayout;
 
 import com.example.appmusic.Adapter.ViewPagerAdapter;
@@ -97,7 +87,6 @@ public class PlaySongActivity extends AppCompatActivity {
             psService.playSong();
             psService.go();
             setTotalTime();
-            //showNotification();
             btnPlay.setImageResource(R.drawable.pause);
             updateCurrentTime();
         }
@@ -109,7 +98,8 @@ public class PlaySongActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        unbindService(musicConnection);
+        if (arraySong.size() > 0)
+            unbindService(musicConnection);
         super.onPause();
     }
 
@@ -155,13 +145,15 @@ public class PlaySongActivity extends AppCompatActivity {
     }
 
     public void createMediaPlayer() {
-        if (playIntent == null) {
-            playIntent = new Intent(this, PlaySongService.class);
-            bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
-            startService(playIntent);
+        if (arraySong.size() > 0) {
+            if (playIntent == null) {
+                playIntent = new Intent(this, PlaySongService.class);
+                bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+                startService(playIntent);
+            }
+            viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
+            viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
         }
-        viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
-        viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
     }
 
     public void setTotalTime() {
@@ -180,12 +172,12 @@ public class PlaySongActivity extends AppCompatActivity {
                 viewPager.setTag(-16110111, mPosition);
                 viewPager.getAdapter().notifyDataSetChanged();
                 if (psService.getCurrentPosition() > psService.getDuration()) {
-                    if (!isReplayOne){
+                    if (!isReplayOne) {
                         mPosition++;
                         psService.playNext();
                     }
                     if (mPosition > arraySong.size() - 1) {
-                        if(!isReplay) {
+                        if (!isReplay) {
                             mPosition = 0;
                             viewPager.setTag(-16110111, mPosition);
                             viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
@@ -195,7 +187,7 @@ public class PlaySongActivity extends AppCompatActivity {
                             psService.pausePlayer();
                             btnPlay.setImageResource(R.drawable.play);
                             return;
-                        }else {
+                        } else {
                             mPosition = 0;
                         }
                     }
@@ -212,38 +204,41 @@ public class PlaySongActivity extends AppCompatActivity {
     }
 
     public void onPlay(View v) {
-        if (!psService.isPlaying()) {
-            psService.go();
-            btnPlay.setImageResource(R.drawable.pause);
-        } else {
-            psService.pausePlayer();
-            btnPlay.setImageResource(R.drawable.play);
+        if (arraySong.size() > 0) {
+            if (!psService.isPlaying()) {
+                psService.go();
+                btnPlay.setImageResource(R.drawable.pause);
+            } else {
+                psService.pausePlayer();
+                btnPlay.setImageResource(R.drawable.play);
+            }
         }
-       //showNotification();
     }
 
     public void onNext(View v) {
-        psService.playNext();
-        btnPlay.setImageResource(R.drawable.pause);
-        if (mPosition == arraySong.size() - 1) mPosition = 0;
-        else mPosition++;
-        viewPager.setTag(-16110111, mPosition);
-        viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
-        viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
-        setTotalTime();
-        //showNotification();
+        if (arraySong.size() > 0) {
+            psService.playNext();
+            btnPlay.setImageResource(R.drawable.pause);
+            if (mPosition == arraySong.size() - 1) mPosition = 0;
+            else mPosition++;
+            viewPager.setTag(-16110111, mPosition);
+            viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
+            viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
+            setTotalTime();
+        }
     }
 
     public void onPrev(View v) {
-        psService.playPrev();
-        btnPlay.setImageResource(R.drawable.pause);
-        if (mPosition == 0) mPosition = arraySong.size() - 1;
-        else mPosition--;
-        viewPager.setTag(-16110111, mPosition);
-        viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
-        viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
-        setTotalTime();
-        //showNotification();
+        if (arraySong.size() > 0) {
+            psService.playPrev();
+            btnPlay.setImageResource(R.drawable.pause);
+            if (mPosition == 0) mPosition = arraySong.size() - 1;
+            else mPosition--;
+            viewPager.setTag(-16110111, mPosition);
+            viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
+            viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
+            setTotalTime();
+        }
     }
 
     public void onRepeat(View v) {
@@ -262,41 +257,48 @@ public class PlaySongActivity extends AppCompatActivity {
     }
 
     public void onShuffle(View v) {
-        if (!isShuffle) {
-            isShuffle = true;
-            btnShuffle.setImageResource(R.drawable.shuffle);
-            temp = arraySong.get(mPosition).getIDBaiHat();
-            Collections.shuffle(arraySong);
-            for (int i = 0; i < arraySong.size(); i++) {
-                if (temp == arraySong.get(i).getIDBaiHat()) {
-                    mPosition = i;
-                    break;
+        if (arraySong.size() > 0) {
+            if (!isShuffle) {
+                isShuffle = true;
+                btnShuffle.setImageResource(R.drawable.shuffle);
+                temp = arraySong.get(mPosition).getIDBaiHat();
+                Collections.shuffle(arraySong);
+                for (int i = 0; i < arraySong.size(); i++) {
+                    if (temp == arraySong.get(i).getIDBaiHat()) {
+                        mPosition = i;
+                        break;
+                    }
                 }
+                psService.setList(arraySong);
+                psService.setSong(mPosition);
+                viewPager.setTag(-16110111, mPosition);
+                viewPager.setTag(-16110110, arraySong);
+            } else {
+                isShuffle = false;
+                btnShuffle.setImageResource(R.drawable.no_shuffle);
+                temp = arraySong.get(mPosition).getIDBaiHat();
+                addSong();
+                for (int i = 0; i < arraySong.size(); i++) {
+                    if (temp == arraySong.get(i).getIDBaiHat()) {
+                        mPosition = i;
+                        break;
+                    }
+                }
+                psService.setList(arraySong);
+                psService.setSong(mPosition);
+                viewPager.setTag(-16110111, mPosition);
+                viewPager.setTag(-16110110, arraySong);
             }
-            psService.setList(arraySong);
-            psService.setSong(mPosition);
-            viewPager.setTag(-16110111, mPosition);
-            viewPager.setTag(-16110110, arraySong);
         } else {
-            isShuffle = false;
-            btnShuffle.setImageResource(R.drawable.no_shuffle);
-            temp = arraySong.get(mPosition).getIDBaiHat();
-            addSong();
-            for (int i = 0; i < arraySong.size(); i++) {
-                if (temp == arraySong.get(i).getIDBaiHat()) {
-                    mPosition = i;
-                    break;
-                }
+            if (!isShuffle) {
+                isShuffle = true;
+                btnShuffle.setImageResource(R.drawable.shuffle);
+            } else {
+                isShuffle = false;
+                btnShuffle.setImageResource(R.drawable.no_shuffle);
             }
-            psService.setList(arraySong);
-            psService.setSong(mPosition);
-            viewPager.setTag(-16110111, mPosition);
-            viewPager.setTag(-16110110, arraySong);
         }
     }
-
-
-
 
 
     public void setLayout() {
@@ -313,10 +315,16 @@ public class PlaySongActivity extends AppCompatActivity {
 
             sliderDotspanel.addView(dots[i], params);
         }
-        dots[1].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
+        if (arraySong.size() > 0)
+            dots[1].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
+        else {
+            dots[0].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
+            dots[1].setImageDrawable(null);
+        }
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragment(new SongsListFragment());
-        viewPagerAdapter.addFragment(new SongDetailsFragment());
+        if (arraySong.size() > 0)
+            viewPagerAdapter.addFragment(new SongDetailsFragment());
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setCurrentItem(1);
 

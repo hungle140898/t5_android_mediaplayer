@@ -130,4 +130,9 @@ public class Fragment_CaSi extends Fragment implements SearchView.OnQueryTextLis
         intent.putExtra("id",id);
         startActivity(intent);
     }
+
+    @Override
+    public void longclickplaylist(int id) {
+
+    }
 }

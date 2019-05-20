@@ -69,6 +69,13 @@ public class ListPlayListAdapter extends BaseAdapter {
                                            }
                                        }
         );
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                listener.longclickplaylist(playList.getIDPlayList());
+                return true;
+            }
+        });
         return convertView;
     }
 

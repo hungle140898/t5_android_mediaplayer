@@ -245,4 +245,9 @@ public class Fragment_TrangChu extends Fragment implements EventListener,SearchV
 
     }
 
+    @Override
+    public void longclickplaylist(int id) {
+
+    }
+
 }

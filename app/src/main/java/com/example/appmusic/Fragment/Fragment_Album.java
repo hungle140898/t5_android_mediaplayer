@@ -130,4 +130,9 @@ public class Fragment_Album extends Fragment implements SearchView.OnQueryTextLi
     public void casiClick(int id) {
 
     }
+
+    @Override
+    public void longclickplaylist(int id) {
+
+    }
 }

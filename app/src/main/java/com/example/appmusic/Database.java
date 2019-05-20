@@ -21,6 +21,7 @@ public class Database extends SQLiteOpenHelper {
         return database.rawQuery(sql,null);
     }
 
+
     // Truy van tra kqua
 
     @Override

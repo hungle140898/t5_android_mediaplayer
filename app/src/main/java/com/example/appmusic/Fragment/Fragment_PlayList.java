@@ -9,18 +9,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.appmusic.Activity.PlaySongActivity;
 import com.example.appmusic.Adapter.ListPlayListAdapter;
+import com.example.appmusic.Adapter.ListSongdialog;
 import com.example.appmusic.Objects.PlayList;
+import com.example.appmusic.Objects.Song;
 import com.example.appmusic.R;
 import com.example.appmusic.Interface.EventListener;
 
+import java.net.IDN;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,9 +37,12 @@ public class Fragment_PlayList extends Fragment implements SearchView.OnQueryTex
     ArrayList<PlayList> arrayPlayList;
     ArrayList<PlayList> arrayTimKiemPlayList;
     ListPlayListAdapter adapter;
+    ArrayList<Song> list = new ArrayList<>();
     SearchView searchView;
     Button bt_addplaylist;
-
+    private boolean isViewShown = false;
+    Spinner spnCategory;
+    public Song song;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +64,8 @@ public class Fragment_PlayList extends Fragment implements SearchView.OnQueryTex
                 dialogthem();
             }
         });
+        setUserVisibleHint(isViewShown);
+        isViewShown=true;
         return view;
     }
 
@@ -185,5 +195,69 @@ public class Fragment_PlayList extends Fragment implements SearchView.OnQueryTex
     @Override
     public void casiClick(int id) {
 
+    }
+
+    @Override
+    public void longclickplaylist(final int idplaylist) {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.dialog_deletesongonplaylist);
+        spnCategory = (Spinner)dialog.findViewById(R.id.spnCategory);
+        Button btn_xacnhan = dialog.findViewById(R.id.btn_xacnhan);
+        Button btn_huy = dialog.findViewById(R.id.btn_huy);
+        loaddatadialog(idplaylist);
+        final  ListSongdialog adapter =  new ListSongdialog(getActivity(),android.R.layout.simple_spinner_item,list);
+        adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
+        spnCategory.setAdapter(adapter);
+        spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                song = adapter.getItem(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        btn_xacnhan.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                database.QueryData("DELETE FROM Playlist_BaiHat WHERE Playlist_BaiHat.IDBaiHat="+song.getIDBaiHat()+" AND Playlist_BaiHat.IDPlayList IN("+song.getIDBaiHat()+","+idplaylist+")");
+                Toast.makeText(getActivity(),"Bạn đã xóa bài hát ra khỏi playlist",Toast.LENGTH_LONG).show();
+                getdata();
+                dialog.dismiss();
+            }
+        });
+        btn_huy.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+    private void loaddatadialog(int idplaylist)
+    {
+        Cursor cursor = database.getData("SELECT BaiHat.IDBaiHat,BaiHat.TenBaiHat FROM BaiHat INNER JOIN Playlist_BaiHat ON BaiHat.IDBaiHat=Playlist_BaiHat.IDBaiHat WHERE Playlist_BaiHat.IDPlayList="+ idplaylist);
+        list.clear();
+        while (cursor.moveToNext())
+        {
+            Song song = new Song();
+            song.setIDBaiHat(cursor.getInt(0));
+            song.setTenBaiHat(cursor.getString(1));
+            list.add(song);
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (getView() != null && isVisibleToUser) {
+            isViewShown = true; // fetchdata() contains logic to show data when page is selected mostly asynctask to fill the data
+            LayDanhSachPlayList();
+            SetAdapter(arrayPlayList);
+        } else {
+            isViewShown = false;
+        }
     }
 }

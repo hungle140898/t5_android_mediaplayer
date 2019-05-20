@@ -128,4 +128,9 @@ public class Fragment_TheLoai extends Fragment implements SearchView.OnQueryText
     public void casiClick(int id) {
 
     }
+
+    @Override
+    public void longclickplaylist(int id) {
+
+    }
 }

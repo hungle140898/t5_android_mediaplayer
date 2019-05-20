@@ -8,4 +8,5 @@ public interface EventListener {
     void theloaiClick(int id);
     void albumClick(int id);
     void casiClick(int id);
+    void longclickplaylist(int id);
 }

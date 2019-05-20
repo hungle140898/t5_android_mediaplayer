@@ -1,16 +1,21 @@
 package com.example.appmusic.Service;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 
+import com.example.appmusic.Activity.PlaySongActivity;
 import com.example.appmusic.Objects.Song;
+import com.example.appmusic.R;
 
 import java.util.ArrayList;
 
-public class PlaySongService extends Service {
+public class PlaySongService extends Service implements
+        MediaPlayer.OnPreparedListener {
 
     private final IBinder musicBind = new PlaySongBinder();
     public int mPosition;
@@ -18,6 +23,26 @@ public class PlaySongService extends Service {
     ArrayList<Song> arraySong;
     private String songTitle = "";
     private static final int NOTIFY_ID = 1;
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        Intent notIntent = new Intent(this, PlaySongActivity.class);
+        notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendInt = PendingIntent.getActivity(this, 0,
+                notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Notification.Builder builder = new Notification.Builder(this);
+
+        builder.setContentIntent(pendInt)
+                .setSmallIcon(R.drawable.play)
+                .setTicker(songTitle)
+                .setOngoing(true)
+                .setContentTitle("Playing")
+                .setContentText(songTitle);
+        Notification not = builder.build();
+
+        startForeground(NOTIFY_ID, not);
+    }
 
     public class PlaySongBinder extends Binder {
 
@@ -43,6 +68,7 @@ public class PlaySongService extends Service {
         super.onCreate();
         mPosition = 0;
         mediaPlayer = new MediaPlayer();
+        mediaPlayer.setOnPreparedListener(this);
     }
 
     public void setList(ArrayList<Song> Songs) {

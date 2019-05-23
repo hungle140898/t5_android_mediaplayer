@@ -113,7 +113,10 @@ public class PlaySongService extends Service {
         if (mPosition == 0) mPosition = arraySong.size() - 1;
         else mPosition--;
         playSong();
-        go();
+        if (TT == 0) {
+            go();
+        }
+
         showNotification();
     }
 
@@ -121,8 +124,13 @@ public class PlaySongService extends Service {
         if (mPosition == arraySong.size() - 1) mPosition = 0;
         else mPosition++;
         playSong();
-        go();
-        showNotification();
+        if(TT==0){
+            go();
+        }
+        if(mediaPlayer.isPlaying()){
+            showNotification();
+        }
+
     }
 
     public void setSong(int songIndex) {
@@ -255,17 +263,6 @@ public class PlaySongService extends Service {
                 mediaPlayer.stop();
                 mediaPlayer.reset();
                 mediaPlayer.setDataSource(strings[0]);
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mediaPlayer) {
-//                        initialStage=true;
-//                        playPause=false;
-//                        btn_play_pause.setImageResource(R.drawable.ic_play);
-                        mediaPlayer.stop();
-                        mediaPlayer.reset();
-                    }
-
-                });
                 mediaPlayer.prepare();
                 prepared = true;
 

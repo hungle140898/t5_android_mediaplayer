@@ -185,7 +185,12 @@ public class Fragment_Music_Offline extends Fragment implements EventListener,Se
 
     @Override
     public void songclick(int id, int index) {
-
+        Intent intent=new Intent(getContext(), PlaySongActivity.class);
+        int key=1;
+        intent.putExtra("id",id);
+        intent.putExtra("index",index);
+        intent.putExtra("key",key);
+        startActivity(intent);
     }
 
     @Override
@@ -236,12 +241,12 @@ public class Fragment_Music_Offline extends Fragment implements EventListener,Se
         SetAdapter(arrayTimKiemBaiHat);
         return true;
     }
-    public void songclick(int id)
+    /*public void songclick(int id,int index)
     {
         Intent intent=new Intent(getContext(), PlaySongActivity.class);
         intent.putExtra("text","abc");
         startActivity(intent);
         //Toast.makeText(getActivity(),String.valueOf(id),Toast.LENGTH_LONG).show();
-    }
+    }*/
 
 }

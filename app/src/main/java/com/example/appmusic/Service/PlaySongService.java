@@ -4,23 +4,30 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.IdRes;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.appmusic.Activity.PlaySongActivity;
 import com.example.appmusic.Objects.Song;
 import com.example.appmusic.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class PlaySongService extends Service{
@@ -29,6 +36,7 @@ public class PlaySongService extends Service{
     public int mPosition;
     public MediaPlayer mediaPlayer;
     ArrayList<Song> arraySong;
+    private  int TT=0;
     private String songTitle = "";
     private static final int NOTIFY_ID = 1;
     public final String ACTION_NOTIFICATION_BUTTON_CLICK = "btnClick";
@@ -59,6 +67,7 @@ public class PlaySongService extends Service{
         super.onCreate();
         mPosition = 0;
         mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         createNotificationChannel();
         registerReceiver(receiver, new IntentFilter(
                 ACTION_NOTIFICATION_BUTTON_CLICK));
@@ -68,14 +77,41 @@ public class PlaySongService extends Service{
         arraySong = Songs;
     }
 
+    public void setTrangthai(int _TT) {
+        TT = _TT;
+    }
+
     public void playSong() {
-        mediaPlayer.pause();
+        if(mediaPlayer.isPlaying())
+        {
+            mediaPlayer.pause();
+        }
+
+
         Song playSong = arraySong.get(mPosition);
         songTitle = playSong.getTenBaiHat();
 
-        int currSong = getRawResIdByName(playSong.getLink());
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), currSong);
+        if(TT==0){
+            int currSong = getRawResIdByName(playSong.getLink());
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), currSong);
+        }
+        else
+        {
+            String songLink=playSong.getLink();
+
+            //mediaPlayer.setDataSource(songLink);
+          /*  mediaPlayer.setOnPreparedListener(this.onPrepared(mediaPlayer));
+            mediaPlayer.prepareAsync();*/
+
+            new Player().execute(songLink);
+        }
+
+
     }
+
+    /*public void onPrepared(MediaPlayer player) {
+        player.start();
+    }*/
 
     public void playPrev() {
         if (mPosition == 0) mPosition = arraySong.size() - 1;
@@ -121,6 +157,7 @@ public class PlaySongService extends Service{
     public boolean isPlaying() {
         return mediaPlayer.isPlaying();
     }
+
 
     public void pausePlayer() {
         mediaPlayer.pause();
@@ -210,4 +247,57 @@ public class PlaySongService extends Service{
             notificationManager.createNotificationChannel(channel);
         }
     }
+
+
+
+    class Player extends AsyncTask<String,Void,Boolean> {
+
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            Boolean prepared = false;
+            try {
+                mediaPlayer.stop();
+                mediaPlayer.reset();
+                mediaPlayer.setDataSource(strings[0]);
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+//                        initialStage=true;
+//                        playPause=false;
+//                        btn_play_pause.setImageResource(R.drawable.ic_play);
+                        mediaPlayer.stop();
+                        mediaPlayer.reset();
+                    }
+
+                });
+                mediaPlayer.prepare();
+                prepared=true;
+
+            } catch (Exception ex) {
+                Log.e("MyAudioStreamApp", ex.getMessage());
+            }
+            return prepared;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+
+            super.onPostExecute(aBoolean);
+
+            mediaPlayer.start();
+
+//            initialStage=false;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+
+    }
+
 }

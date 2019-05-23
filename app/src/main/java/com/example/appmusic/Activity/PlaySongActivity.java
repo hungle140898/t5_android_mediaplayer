@@ -16,6 +16,7 @@
 
 package com.example.appmusic.Activity;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -54,6 +55,7 @@ public class PlaySongActivity extends AppCompatActivity {
     private Intent playIntent;
     ImageButton btnReplay, btnPrev, btnNext, btnPlay, btnShuffle;
     ArrayList<Song> arraySong;
+    private int TT;
     public int mPosition = 0;
     boolean isReplay = false, isReplayOne = false, isShuffle = false;
     Animation animation;
@@ -61,6 +63,7 @@ public class PlaySongActivity extends AppCompatActivity {
     private ImageView[] dots;
     public ViewPager viewPager;
     private int temp = 0;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +73,7 @@ public class PlaySongActivity extends AppCompatActivity {
         addSong();
         setLayout();
         createMediaPlayer();
-
+        progressDialog=new ProgressDialog(PlaySongActivity.this);
 
         viewPager.setTag(-16110110, arraySong);
         viewPager.setTag(-16110111, mPosition);
@@ -82,13 +85,18 @@ public class PlaySongActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             PlaySongService.PlaySongBinder binder = (PlaySongService.PlaySongBinder) service;
             psService = binder.getService();
+            psService.setTrangthai(TT);
             psService.setList(arraySong);
             psService.setSong(mPosition);
             psService.playSong();
             psService.go();
-            setTotalTime();
+            if(TT==0){
+                setTotalTime();
+                updateCurrentTime();
+            }
+
             btnPlay.setImageResource(R.drawable.pause);
-            updateCurrentTime();
+
         }
 
         @Override
@@ -108,15 +116,18 @@ public class PlaySongActivity extends AppCompatActivity {
         int key = intent.getIntExtra("key", 0);
         int id = intent.getIntExtra("id", 0);
         int index = intent.getIntExtra("index", 0);
+
         arraySong = new ArrayList<>();
         switch (key) {
             case 1: {
                 getAllSong();
+                TT=0;
                 mPosition = index;
                 break;
             }
             case 2: {
                 getAllSongInPlaylist(id);
+
                 break;
             }
             case 3: {
@@ -129,6 +140,14 @@ public class PlaySongActivity extends AppCompatActivity {
             }
             case 5: {
                 getAllSongOfType(id);
+                break;
+            }
+            default:{
+                Bundle args = intent.getBundleExtra("BUNDLE");
+                arraySong=(ArrayList<Song>) args.getSerializable("ARRAYLIST");
+                TT=1;
+                mPosition=index;
+
                 break;
             }
         }
@@ -163,7 +182,7 @@ public class PlaySongActivity extends AppCompatActivity {
         viewPager.getAdapter().notifyDataSetChanged();
     }
 
-    private void updateCurrentTime() {
+    public void updateCurrentTime() {
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -270,6 +289,7 @@ public class PlaySongActivity extends AppCompatActivity {
                     }
                 }
                 psService.setList(arraySong);
+                psService.setTrangthai(TT);
                 psService.setSong(mPosition);
                 viewPager.setTag(-16110111, mPosition);
                 viewPager.setTag(-16110110, arraySong);
@@ -284,6 +304,7 @@ public class PlaySongActivity extends AppCompatActivity {
                         break;
                     }
                 }
+                psService.setTrangthai(TT);
                 psService.setList(arraySong);
                 psService.setSong(mPosition);
                 viewPager.setTag(-16110111, mPosition);

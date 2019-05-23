@@ -1,6 +1,8 @@
 package com.example.appmusic.Objects;
 
-public class Song {
+import java.io.Serializable;
+
+public class Song implements  Serializable {
     private int IDBaiHat;
     private String TenBaiHat;
     private String TenCaSi;

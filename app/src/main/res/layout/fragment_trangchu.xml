@@ -3,22 +3,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/backgroundfrag"
-    android:orientation="vertical">
-    <SearchView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".Fragment.Fragment_Online">
+    <android.support.design.widget.TabLayout
+        android:id="@+id/TabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@drawable/customsearch"
-        android:textAlignment="textStart"
-        android:id="@+id/search_bar"
-        android:queryHint="Search here"
-        ></SearchView>
-    <requestFocus />
-    <ListView
+        android:background="@android:color/transparent"
+        app:tabIndicatorHeight="2dp"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="#a845de"
+        app:tabTextColor="#707070"
+        app:tabTextAppearance="@style/SizeTabLayout"
+        >
+    </android.support.design.widget.TabLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/ViewPaper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/lv_baihat"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"></ListView>
+        android:layout_height="0dp"
+        android:layout_weight="1">
+    </android.support.v4.view.ViewPager>
 </LinearLayout>

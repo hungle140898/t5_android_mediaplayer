@@ -90,7 +90,9 @@ public class PlaySongActivity extends AppCompatActivity {
             psService.setSong(mPosition);
             psService.playSong();
             psService.go();
-            if(TT==0){
+            updateCurrentTime();
+            if(TT==0)
+            {
                 setTotalTime();
                 updateCurrentTime();
             }
@@ -183,43 +185,46 @@ public class PlaySongActivity extends AppCompatActivity {
     }
 
     public void updateCurrentTime() {
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                viewPager.setTag(-16110404, psService.getCurrentPosition());
-                viewPager.setTag(-16110111, mPosition);
-                viewPager.getAdapter().notifyDataSetChanged();
-                if (psService.getCurrentPosition() > psService.getDuration()) {
-                    if (!isReplayOne) {
-                        mPosition++;
-                        psService.playNext();
-                    }
-                    if (mPosition > arraySong.size() - 1) {
-                        if (!isReplay) {
-                            mPosition = 0;
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(psService.isPlaying()) {
+                        setTotalTime();
+                        viewPager.setTag(-16110404, psService.getCurrentPosition());
+                        viewPager.setTag(-16110111, mPosition);
+                        viewPager.getAdapter().notifyDataSetChanged();
+                        if (psService.getCurrentPosition() > psService.getDuration()) {
+                            if (!isReplayOne) {
+                                mPosition++;
+                                psService.playNext();
+                            }
+                            if (mPosition > arraySong.size() - 1) {
+                                if (!isReplay) {
+                                    mPosition = 0;
+                                    viewPager.setTag(-16110111, mPosition);
+                                    viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
+                                    viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
+                                    setTotalTime();
+                                    updateCurrentTime();
+                                    psService.pausePlayer();
+                                    btnPlay.setImageResource(R.drawable.play);
+                                    return;
+                                } else {
+                                    mPosition = 0;
+                                }
+                            }
+                            psService.go();
+                            btnPlay.setImageResource(R.drawable.pause);
                             viewPager.setTag(-16110111, mPosition);
                             viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
                             viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
                             setTotalTime();
-                            updateCurrentTime();
-                            psService.pausePlayer();
-                            btnPlay.setImageResource(R.drawable.play);
-                            return;
-                        } else {
-                            mPosition = 0;
                         }
                     }
-                    psService.go();
-                    btnPlay.setImageResource(R.drawable.pause);
-                    viewPager.setTag(-16110111, mPosition);
-                    viewPager.setTag(-16110400, arraySong.get(mPosition).getTenBaiHat());
-                    viewPager.setTag(-16110401, arraySong.get(mPosition).getTenCaSi());
-                    setTotalTime();
+                    updateCurrentTime();
                 }
-                updateCurrentTime();
-            }
-        }, 500);
+            }, 500);
     }
 
     public void onPlay(View v) {

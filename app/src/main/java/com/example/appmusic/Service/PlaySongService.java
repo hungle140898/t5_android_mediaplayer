@@ -30,13 +30,13 @@ import com.example.appmusic.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class PlaySongService extends Service{
+public class PlaySongService extends Service {
 
     private final IBinder musicBind = new PlaySongBinder();
     public int mPosition;
     public MediaPlayer mediaPlayer;
     ArrayList<Song> arraySong;
-    private  int TT=0;
+    private int TT = 0;
     private String songTitle = "";
     private static final int NOTIFY_ID = 1;
     public final String ACTION_NOTIFICATION_BUTTON_CLICK = "btnClick";
@@ -82,8 +82,7 @@ public class PlaySongService extends Service{
     }
 
     public void playSong() {
-        if(mediaPlayer.isPlaying())
-        {
+        if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
         }
 
@@ -91,17 +90,14 @@ public class PlaySongService extends Service{
         Song playSong = arraySong.get(mPosition);
         songTitle = playSong.getTenBaiHat();
 
-        if(TT==0){
+        if (TT == 0) {
             int currSong = getRawResIdByName(playSong.getLink());
             mediaPlayer = MediaPlayer.create(getApplicationContext(), currSong);
-        }
-        else
-        {
-            String songLink=playSong.getLink();
+        } else {
+            String songLink = playSong.getLink();
 
-            //mediaPlayer.setDataSource(songLink);
-          /*  mediaPlayer.setOnPreparedListener(this.onPrepared(mediaPlayer));
-            mediaPlayer.prepareAsync();*/
+//            mediaPlayer.setDataSource(songLink);
+//            mediaPlayer.prepareAsync();
 
             new Player().execute(songLink);
         }
@@ -249,8 +245,7 @@ public class PlaySongService extends Service{
     }
 
 
-
-    class Player extends AsyncTask<String,Void,Boolean> {
+    class Player extends AsyncTask<String, Void, Boolean> {
 
 
         @Override
@@ -272,23 +267,19 @@ public class PlaySongService extends Service{
 
                 });
                 mediaPlayer.prepare();
-                prepared=true;
+                prepared = true;
 
             } catch (Exception ex) {
-                Log.e("MyAudioStreamApp", ex.getMessage());
+                Log.e("MyAudioStreamApp", "Lỗi");
             }
             return prepared;
         }
 
         @Override
         protected void onPostExecute(Boolean aBoolean) {
-
             super.onPostExecute(aBoolean);
 
             mediaPlayer.start();
-
-//            initialStage=false;
-
         }
 
         @Override
